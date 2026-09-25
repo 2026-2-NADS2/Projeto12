@@ -15,9 +15,6 @@
 ## Descrição
 
 <p align="center">
-<img src="https://pix4free.org/assets/library/2021-01-20/originals/game.jpg" alt="KFKA - Plataforma de Acompanhamento Escolar" border="0">
-  Game by <a href="http://www.nyphotographic.com/">Nick Youngson</a> <a rel="license" href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a> <a href="http://pix4free.org/">Pix4free</a>
-</p>
 
 A **KFKA** é uma aplicação web responsiva voltada a escolas de Ensino Fundamental, projetada para apoiar o acompanhamento acadêmico bimestral e estabelecer um fluxo claro de informação entre professores, administração escolar e pais ou responsáveis.
 
@@ -25,10 +22,6 @@ O sistema organiza-se em três módulos principais:
 1. **Módulo Administrador:** Gestão de cadastros (alunos, professores, turmas, disciplinas, tags), controle dos períodos bimestrais de digitação, fluxo de revisão e publicação de anotações, além de relatórios gerenciais e exportação em Excel.
 2. **Módulo Professor:** Lançamento de observações qualitativas, médias e tags de acompanhamento para suas turmas, com opção de salvar rascunho e enviar para revisão.
 3. **Módulo Pai/Responsável:** Consulta aos relatórios bimestrais já publicados, confirmação de ciência/retorno e geração de documento consolidado em PDF.
-
-<br>
-May the force be with you!
-<br><br>
 
 ## 🛠 Estrutura de pastas
 
