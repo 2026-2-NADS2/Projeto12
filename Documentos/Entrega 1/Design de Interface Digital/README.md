@@ -41,7 +41,7 @@ O desenvolvimento da interface considerou aspectos como:
 
 ## 3. Mapa de Navegação
 
-[🔗 Acessar o Mapa de Navegação]( LINK AQ )
+[🔗 Acessar o Mapa de Navegação](https://www.figma.com/board/Cx7cEJgdYwrNdYaCqTYr1W/Fluxo-de-navega%C3%A7%C3%A3o-PI?t=pAtUDeC81anP0gL3-1)
 
 O mapa de navegação apresenta a estrutura de acesso às páginas e funcionalidades da plataforma, organizando os caminhos disponíveis para cada tipo de usuário.
 
@@ -78,7 +78,7 @@ O mapa de navegação apresenta a estrutura de acesso às páginas e funcionalid
 |---|---|---|
 | Guia de Estilo | Figma | ✅ Finalizado |
 | Home Page | Figma | ✅ Finalizado |
-| Mapa de Navegação | Figma | Em contrução |
+| Mapa de Navegação | Figma | ✅ Finalizado |
 
 ---
 
