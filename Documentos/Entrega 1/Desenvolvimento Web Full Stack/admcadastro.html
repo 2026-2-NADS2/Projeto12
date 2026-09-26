@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configurações e Cadastros | KFKA Tech</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .cadastros-container {
+            padding: 2rem 2.5rem;
+        }
+
+        .card-panel {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 1.5rem;
+        }
+
+        .card-panel h2 {
+            font-size: 1.1rem;
+            color: var(--text-main);
+            margin-bottom: 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 0.4rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.65rem 0.9rem;
+            background-color: var(--bg-main);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            color: var(--text-main);
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        .form-control:focus {
+            border-color: var(--kfka-cyan);
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            text-align: left;
+            margin-top: 1rem;
+        }
+
+        .data-table th, .data-table td {
+            padding: 0.75rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .data-table th {
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Menu Lateral Estilo Portal -->
+    <aside class="sidebar">
+        <div class="sidebar-logo">KFKA</div>
+        <nav class="sidebar-nav">
+            <a href="admin-cadastros.html" class="sidebar-icon active" title="Cadastros e Configurações">&#8962;</a>
+            <a href="admin.html" class="sidebar-icon" title="Voltar ao Painel de Moderação" style="font-size: 1rem;">&#8617;</a>
+            <a href="index.html" class="sidebar-icon" title="Terminar Sessão" style="margin-top: auto; color: #ef4444;">&#10162;</a>
+        </nav>
+    </aside>
+
+    <!-- Área Principal -->
+    <div class="main-wrapper">
+        <header class="portal-header">
+            <div class="user-profile">Módulo do Administrador // <span>Configurações do Sistema</span></div>
+            <div style="font-size: 0.85rem; color: var(--text-muted);">Gestão de Cadastros e Períodos Bimestrais</div>
+        </header>
+
+        <div class="cadastros-container">
+            <!-- Painel 1: Configuração de Períodos Bimestrais -->
+            <div class="card-panel">
+                <h2>Configuração de Períodos de Digitação</h2>
+                <form id="bimestreForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="bimestreSelect">Período Letivo</label>
+                            <select id="bimestreSelect" class="form-control" required>
+                                <option value="1">1º Bimestre de 2026</option>
+                                <option value="2" selected>2º Bimestre de 2026</option>
+                                <option value="3">3º Bimestre de 2026</option>
+                                <option value="4">4º Bimestre de 2026</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="statusPrazo">Prazo para Digitação dos Professores</label>
+                            <select id="statusPrazo" class="form-control" required>
+                                <option value="aberto" selected>Aberto (Permite lançamentos)</option>
+                                <option value="fechado">Fechado (Bloqueado)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn" style="margin-top: 0.5rem;">Atualizar Período</button>
+                </form>
+            </div>
+
+            <!-- Painel 2: Cadastro de Turmas e Disciplinas -->
+            <div class="card-panel">
+                <h2>Turmas e Vínculos Acadêmicos Ativos</h2>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Turma</th>
+                            <th>Nível de Ensino</th>
+                            <th>Professor Responsável</th>
+                            <th>Disciplina</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>5º Ano A</td>
+                            <td>Ensino Fundamental I</td>
+                            <td>Prof. Carlos Alberto</td>
+                            <td>Matemática</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('bimestreForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Configurações de prazos e períodos bimestrais atualizadas com sucesso no sistema!');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulo Professor | KFKA Tech</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1.6fr 1fr;
+            gap: 1.5rem;
+            padding: 2rem 2.5rem;
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card-panel {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 1.5rem;
+        }
+
+        .card-panel h2 {
+            font-size: 1.1rem;
+            color: var(--text-main);
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-box {
+            background-color: var(--bg-main);
+            border: 1px solid var(--border);
+            padding: 1rem;
+            border-radius: var(--radius);
+            text-align: center;
+        }
+
+        .stat-box h3 {
+            font-size: 1.4rem;
+            color: var(--kfka-cyan);
+            margin-bottom: 0.2rem;
+        }
+
+        .stat-box p {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 0.4rem;
+        }
+
+        .form-control, textarea.form-control {
+            width: 100%;
+            padding: 0.65rem 0.9rem;
+            background-color: var(--bg-main);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            color: var(--text-main);
+            font-size: 0.9rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-control:focus, textarea.form-control:focus {
+            border-color: var(--kfka-cyan);
+            box-shadow: 0 0 8px rgba(14, 165, 233, 0.2);
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            height: 90px;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            text-align: left;
+        }
+
+        .data-table th, .data-table td {
+            padding: 0.75rem 0.75rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .data-table th {
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .badge-status {
+            padding: 0.2rem 0.5rem;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 700;
+        }
+
+        .badge-revisao { background-color: rgba(245, 158, 11, 0.15); color: #f59e0b; }
+        .badge-publicado { background-color: rgba(16, 185, 129, 0.15); color: #10b981; }
+    </style>
+</head>
+<body>
+
+    <!-- Menu Lateral Estilo Portal -->
+    <aside class="sidebar">
+        <div class="sidebar-logo">KFKA</div>
+        <nav class="sidebar-nav">
+            <a href="professor.html" class="sidebar-icon active" title="Dashboard">&#8962;</a>
+            <a href="index.html" class="sidebar-icon" title="Terminar Sessão" style="margin-top: auto; color: #ef4444;">&#10162;</a>
+        </nav>
+        
+    </aside>
+
+    <!-- Área Principal -->
+    <div class="main-wrapper">
+        <header class="portal-header">
+            <div class="user-profile">Módulo do Professor // <span>Prof. Carlos Alberto (Matemática)</span></div>
+            <div style="font-size: 0.85rem; color: var(--text-muted);">2º Bimestre / 2026</div>
+        </header>
+
+        <div class="dashboard-grid">
+            <!-- Coluna Esquerda: Formulário de Lançamento -->
+            <div>
+                <div class="stats-container">
+                    <div class="stat-box">
+                        <h3>1</h3>
+                        <p>Turmas Ativas</p>
+                    </div>
+                    <div class="stat-box">
+                        <h3>4</h3>
+                        <p>Alunos Atribuídos</p>
+                    </div>
+                    <div class="stat-box">
+                        <h3>4</h3>
+                        <p>Lançamentos OK</p>
+                    </div>
+                </div>
+
+                <div class="card-panel">
+                    <h2>Registrar Acompanhamento Bimestral</h2>
+                    <form id="registroForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="turma">Turma</label>
+                                <select id="turma" class="form-control" required>
+                                    <option value="" disabled selected>Selecionar turma...</option>
+                                    <option value="5anoA">5º Ano A - Fundamental</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="aluno">Aluno(a)</label>
+                                <select id="aluno" class="form-control" required>
+                                    <option value="" disabled selected>Selecionar aluno...</option>
+                                    <option value="joao">João Pedro</option>
+                                    <option value="daniel">Daniel Bandini</option>
+                                    <option value="raphael">Raphael Carmo</option>
+                                    <option value="guilherme">Guilherme Koide</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="media">Média do Bimestre</label>
+                                <input type="number" step="0.1" min="0" max="10" id="media" class="form-control" placeholder="Ex: 8.5" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="tag">Tag de Acompanhamento</label>
+                                <select id="tag" class="form-control" required>
+                                    <option value="excelente">Excelente Desempenho</option>
+                                    <option value="atencao">Necessita Atenção</option>
+                                    <option value="evolucao">Em Evolução Constante</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="descricao">Descrição Qualitativa do Aluno</label>
+                            <textarea id="descricao" class="form-control" placeholder="Descreva o comportamento e o desenvolvimento nos conceitos propostos..." required></textarea>
+                        </div>
+
+                        <button type="submit" class="btn" style="width: 100%;">Salvar e Enviar para Revisão do Administrador</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Coluna Direita: Histórico de Registros Recentes -->
+            <div>
+                <div class="card-panel">
+                    <h2>Registros Enviados</h2>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Aluno</th>
+                                <th>Média</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Daniel Bandini</td>
+                                <td>9.5</td>
+                                <td><span class="badge-status badge-publicado">Publicado</span></td>
+                            </tr>
+                            <tr>
+                                <td>Guilherme Koide</td>
+                                <td>9.8</td>
+                                <td><span class="badge-status badge-publicado">Publicado</span></td>
+                            </tr>
+                            <tr>
+                                <td>João Pedro</td>
+                                <td>9.2</td>
+                                <td><span class="badge-status badge-publicado">Publicado</span></td>
+                            </tr>
+                            <tr>
+                                <td>Raphael Carmo</td>
+                                <td>9.9</td>
+                                <td><span class="badge-status badge-publicado">Publicado</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('registroForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Acompanhamento pedagógico registrado com sucesso e encaminhado para revisão do Administrador!');
+            this.reset();
+        });
+    </script>
+</body>
+</html>

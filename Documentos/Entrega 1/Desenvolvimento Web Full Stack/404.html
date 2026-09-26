@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página Não Encontrada (404) | KFKA Tech</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .error-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .error-code {
+            font-size: 5rem;
+            font-weight: 900;
+            color: var(--kfka-cyan);
+            margin-bottom: 0.5rem;
+            text-shadow: 0 0 20px rgba(14, 165, 233, 0.3);
+        }
+
+        .error-title {
+            font-size: 1.5rem;
+            color: var(--text-main);
+            margin-bottom: 1rem;
+        }
+
+        .error-desc {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            max-width: 400px;
+            margin-bottom: 2rem;
+            line-height: 1.5;
+        }
+
+        .btn-home {
+            background-color: var(--kfka-cyan);
+            color: #0a0c10;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius);
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .btn-home:hover {
+            background-color: #38bdf8;
+            box-shadow: 0 0 15px rgba(14, 165, 233, 0.4);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Conteúdo Centralizado de Erro 404 -->
+    <div class="error-container">
+        <div class="error-code">404</div>
+        <h1 class="error-title">Rota ou Página Não Encontrada</h1>
+        <p class="error-desc">
+            A página que estás a tentar aceder não existe ou foi removida do sistema educacional da KFKA Tech.
+        </p>
+        <a href="index.html" class="btn-home">Voltar ao Início (Login)</a>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,125 @@
+/* --- DESIGN TOKENS (KFKA Tech x Dark Portal Style) --- */
+:root {
+    --bg-main: #0a0c10;
+    --bg-surface: #12161f;
+    --bg-surface-hover: #1a202c;
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --kfka-cyan: #0ea5e9;
+    --kfka-cyan-hover: #0284c7;
+    --border: #1e293b;
+    --radius: 12px;
+    --sidebar-width: 80px;
+    --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+body {
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    min-height: 100vh;
+    display: flex;
+}
+
+/* --- MENU LATERAL DE ÍCONES --- */
+aside.sidebar {
+    width: var(--sidebar-width);
+    background-color: var(--bg-surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1.5rem 0;
+    position: fixed;
+    height: 100vh;
+    z-index: 10;
+}
+
+.sidebar-logo {
+    font-weight: 900;
+    font-size: 1.1rem;
+    color: var(--kfka-cyan);
+    margin-bottom: 2.5rem;
+    letter-spacing: 1px;
+}
+
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    align-items: center;
+    width: 100%;
+}
+
+.sidebar-icon {
+    color: var(--text-muted);
+    font-size: 1.2rem;
+    text-decoration: none;
+    padding: 0.75rem;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.sidebar-icon:hover, .sidebar-icon.active {
+    color: var(--text-main);
+    background-color: var(--bg-surface-hover);
+    box-shadow: 0 0 10px rgba(14, 165, 233, 0.2);
+}
+
+/* --- ÁREA PRINCIPAL DA PÁGINA --- */
+.main-wrapper {
+    margin-left: var(--sidebar-width);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+header.portal-header {
+    padding: 1.5rem 2.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+    background-color: rgba(18, 22, 31, 0.7);
+    backdrop-filter: blur(10px);
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.user-profile span {
+    color: var(--text-main);
+    font-weight: 600;
+}
+
+/* Botões do Sistema */
+.btn {
+    background-color: var(--kfka-cyan);
+    color: #0a0c10;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--radius);
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+}
+
+.btn:hover {
+    background-color: #38bdf8;
+    box-shadow: 0 0 15px rgba(14, 165, 233, 0.4);
+}

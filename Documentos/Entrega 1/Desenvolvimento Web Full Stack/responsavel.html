@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal do Responsável | KFKA Tech</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .responsavel-container {
+            padding: 2rem 2.5rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .card-panel {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 1.5rem;
+        }
+
+        .card-panel h2 {
+            font-size: 1.1rem;
+            color: var(--text-main);
+            margin-bottom: 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .token-box {
+            background-color: var(--bg-main);
+            border: 1px solid var(--border);
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            margin-bottom: 1.5rem;
+            display: flex;
+            gap: 1rem;
+            align-items: flex-end;
+        }
+
+        .form-group {
+            flex: 1;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 0.4rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.65rem 0.9rem;
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            color: var(--text-main);
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        .form-control:focus {
+            border-color: var(--kfka-cyan);
+        }
+
+        .boletim-card {
+            background-color: var(--bg-main);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            display: none;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .boletim-info h3 {
+            font-size: 1rem;
+            color: var(--text-main);
+            margin-bottom: 0.2rem;
+        }
+
+        .boletim-info p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .boletim-nota {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--kfka-cyan);
+            text-align: right;
+        }
+
+        .boletim-nota span {
+            display: block;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        .btn-pdf {
+            background-color: transparent;
+            border: 1px solid var(--kfka-cyan);
+            color: var(--kfka-cyan);
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius);
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-pdf:hover {
+            background-color: var(--kfka-cyan);
+            color: #0a0c10;
+        }
+
+        /* Indicador Visual de Carregamento Assíncrono */
+        #loadingState {
+            display: none;
+            text-align: center;
+            color: var(--kfka-cyan);
+            font-size: 0.9rem;
+            padding: 1rem;
+            font-weight: 600;
+        }
+
+        #mensagemErro {
+            color: #ef4444;
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Menu Lateral / Ícones de Navegação -->
+    <aside class="sidebar">
+        <div class="sidebar-logo">KFKA</div>
+        <nav class="sidebar-nav">
+            <a href="responsavel.html" class="sidebar-icon active" title="Painel Responsável">&#8962;</a>
+            <a href="index.html" class="sidebar-icon" title="Terminar Sessão" style="margin-top: auto; color: #ef4444;">&#10162;</a>
+        </nav>
+    </aside>
+
+    <!-- Área Principal -->
+    <div class="main-wrapper">
+        <header class="portal-header">
+            <div class="user-profile">Módulo do Responsável // <span>Consulta Assíncrona por Token</span></div>
+            <div style="font-size: 0.85rem; color: var(--text-muted);">Conformidade e Segurança LGPD</div>
+        </header>
+
+        <div class="responsavel-container">
+            <div class="card-panel">
+                <h2>Validação de Token do Aluno</h2>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.2rem;">
+                    Insira o token de segurança exclusivo fornecido pela escola.
+                </p>
+                <form id="tokenForm" class="token-box">
+                    <div class="form-group">
+                        <label for="tokenInput">Token Exclusivo do Aluno</label>
+                        <input type="text" id="tokenInput" class="form-control" placeholder="Digite o token de acesso..." required>
+                        <div id="mensagemErro">Token inválido ou não encontrado na base de dados.</div>
+                    </div>
+                    <button type="submit" class="btn" id="btnConsultar">Consultar Aluno</button>
+                </form>
+            </div>
+
+            <!-- Indicador Visual de Carregamento Assíncrono -->
+            <div id="loadingState">
+                ⏳ A consultar a base de dados segura da KFKA Tech... Por favor, aguarde.
+            </div>
+
+            <!-- Área dos Relatórios -->
+            <div class="card-panel">
+                <h2>Relatório Acadêmico Vinculado</h2>
+                
+                <div id="card-joao" class="boletim-card">
+                    <div class="boletim-info">
+                        <h3>João Pedro — 5º Ano A</h3>
+                        <p>Disciplina: Matemática | Prof. Carlos Alberto (2º Bimestre)</p>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 1.5rem;">
+                        <div class="boletim-nota">9.2 <span>Média Final</span></div>
+                        <button class="btn-pdf" onclick="alert('Gerando documento PDF oficial...')">Gerar PDF</button>
+                    </div>
+                </div>
+
+                <div id="card-daniel" class="boletim-card">
+                    <div class="boletim-info">
+                        <h3>Daniel Bandini — 5º Ano A</h3>
+                        <p>Disciplina: Matemática | Prof. Carlos Alberto (2º Bimestre)</p>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 1.5rem;">
+                        <div class="boletim-nota">9.8 <span>Média Final</span></div>
+                        <button class="btn-pdf" onclick="alert('Gerando documento PDF oficial...')">Gerar PDF</button>
+                    </div>
+                </div>
+
+                <div id="card-koide" class="boletim-card">
+                    <div class="boletim-info">
+                        <h3>Guilherme Koide — 5º Ano A</h3>
+                        <p>Disciplina: Matemática | Prof. Carlos Alberto (2º Bimestre)</p>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 1.5rem;">
+                        <div class="boletim-nota">9.5 <span>Média Final</span></div>
+                        <button class="btn-pdf" onclick="alert('Gerando documento PDF oficial...')">Gerar PDF</button>
+                    </div>
+                </div>
+
+                <div id="card-raphael" class="boletim-card">
+                    <div class="boletim-info">
+                        <h3>Raphael Carmo — Ensino Médio / Superior</h3>
+                        <p>Disciplina: Sistemas / Tecnologia | KFKA Tech (2º Bimestre)</p>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 1.5rem;">
+                        <div class="boletim-nota">9.9 <span>Média Final</span></div>
+                        <button class="btn-pdf" onclick="alert('Gerando documento PDF oficial...')">Gerar PDF</button>
+                    </div>
+                </div>
+
+                <p id="avisoVazio" style="font-size: 0.9rem; color: var(--text-muted); text-align: center; padding: 1rem;">
+                    Nenhum relatório carregado no momento. Insira o token do aluno acima.
+                </p>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('tokenForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const token = document.getElementById('tokenInput').value.trim().toUpperCase();
+            
+            // Oculta todos os cartões e mensagens anteriores
+            document.getElementById('card-joao').style.display = 'none';
+            document.getElementById('card-daniel').style.display = 'none';
+            document.getElementById('card-koide').style.display = 'none';
+            document.getElementById('card-raphael').style.display = 'none';
+            document.getElementById('avisoVazio').style.display = 'none';
+            document.getElementById('mensagemErro').style.display = 'none';
+
+            // Mostra o indicador de Loading assíncrono
+            const loadingDiv = document.getElementById('loadingState');
+            loadingDiv.style.display = 'block';
+
+            // Simula o tempo de resposta assíncrono de uma API (1.2 segundos)
+            setTimeout(() => {
+                loadingDiv.style.display = 'none'; // Esconde o loading
+
+                if (token === 'JOAO-2026') {
+                    document.getElementById('card-joao').style.display = 'flex';
+                } else if (token === 'DANIEL-2026') {
+                    document.getElementById('card-daniel').style.display = 'flex';
+                } else if (token === 'GUILHERME-2026') {
+                    document.getElementById('card-koide').style.display = 'flex';
+                } else if (token === 'RAPHAEL-2026') {
+                    document.getElementById('card-raphael').style.display = 'flex';
+                } else {
+                    document.getElementById('mensagemErro').style.display = 'block';
+                    document.getElementById('avisoVazio').style.display = 'block';
+                }
+            }, 1200);
+        });
+    </script>
+</body>
+</html>
