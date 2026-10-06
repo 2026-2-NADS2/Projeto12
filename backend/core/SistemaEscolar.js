@@ -1,3 +1,5 @@
+const AlunoRepository = require('../repositories/AlunoRepository');
+const criarRotasAlunos = require('../routes/alunos');
 const criarRotasAuth = require('../routes/auth');
 const express = require('express');
 const cors = require('cors');
@@ -27,7 +29,9 @@ class SistemaEscolar {
     const usuariosRoutes = criarRotasUsuarios(usuarioRepository);
     const authRoutes = criarRotasAuth(usuarioRepository);
     this.#app.use('/auth', authRoutes);
-
+    const alunoRepository = new AlunoRepository(this.#database);
+    const alunosRoutes = criarRotasAlunos(alunoRepository);
+    this.#app.use('/alunos', alunosRoutes);
     this.#app.use('/usuarios', usuariosRoutes);
 
     this.#app.get('/', (req, res) => {
