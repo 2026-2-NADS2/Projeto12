@@ -1,4 +1,9 @@
+const bcrypt = require('bcrypt');
+
 class Usuario {
+  async compararSenha(senhaDigitada) {
+    return bcrypt.compare(senhaDigitada, this.senhaHash);
+  }
     constructor({ id = null, nome, email, senhaHash = null, perfil, ativo = true, criadoEm = null }) {
       this.id = id;
       this.nome = nome;

@@ -1,3 +1,4 @@
+const criarRotasAuth = require('../routes/auth');
 const express = require('express');
 const cors = require('cors');
 
@@ -24,6 +25,8 @@ class SistemaEscolar {
   #configurarRotas() {
     const usuarioRepository = new UsuarioRepository(this.#database);
     const usuariosRoutes = criarRotasUsuarios(usuarioRepository);
+    const authRoutes = criarRotasAuth(usuarioRepository);
+    this.#app.use('/auth', authRoutes);
 
     this.#app.use('/usuarios', usuariosRoutes);
 
