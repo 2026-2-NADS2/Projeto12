@@ -3,6 +3,8 @@ const criarRotasAlunos = require('../routes/alunos');
 const criarRotasAuth = require('../routes/auth');
 const express = require('express');
 const cors = require('cors');
+const ProfessorRepository = require('../repositories/ProfessorRepository');
+const criarRotasProfessores = require('../routes/professores');
 
 const Database = require('./Database');
 const UsuarioRepository = require('../repositories/UsuarioRepository');
@@ -33,7 +35,10 @@ class SistemaEscolar {
     const alunosRoutes = criarRotasAlunos(alunoRepository);
     this.#app.use('/alunos', alunosRoutes);
     this.#app.use('/usuarios', usuariosRoutes);
-
+    const professorRepository = new ProfessorRepository(this.#database, usuarioRepository);
+    const professoresRoutes = criarRotasProfessores(professorRepository);
+    this.#app.use('/professores', professoresRoutes);
+    
     this.#app.get('/', (req, res) => {
       res.send('API rodando');
     });
