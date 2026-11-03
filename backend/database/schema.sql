@@ -1,7 +1,9 @@
--- Schema do banco sistema_escolar
--- Executar com: USE sistema_escolar; antes, ou já estando conectado ao banco correto
+-- Schema do banco sistema_escolar (MySQL 8)
+-- Pode ser executado em qualquer máquina: cria o banco se não existir e já o seleciona.
 
-CREATE TABLE usuarios (
+CREATE DATABASE IF NOT EXISTS sistema_escolar;
+USE sistema_escolar;
+CREATE TABLE IF NOT EXISTS usuarios (
   id INT AUTO_INCREMENT PRIMARY KEY,
   nome VARCHAR(150) NOT NULL,
   email VARCHAR(150) NOT NULL UNIQUE,
@@ -11,7 +13,7 @@ CREATE TABLE usuarios (
   criado_em DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE alunos (
+CREATE TABLE IF NOT EXISTS alunos (
   id INT AUTO_INCREMENT PRIMARY KEY,
   nome VARCHAR(150) NOT NULL,
   data_nascimento DATE NOT NULL,
@@ -20,7 +22,7 @@ CREATE TABLE alunos (
   criado_em DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE professores (
+CREATE TABLE IF NOT EXISTS professores (
   id INT AUTO_INCREMENT PRIMARY KEY,
   usuario_id INT NOT NULL UNIQUE,
   registro_funcional VARCHAR(30) NOT NULL UNIQUE,
