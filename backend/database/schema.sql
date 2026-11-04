@@ -39,3 +39,13 @@ CREATE TABLE IF NOT EXISTS responsaveis (
   criado_em DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT fk_responsaveis_usuario FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
 );
+
+CREATE TABLE IF NOT EXISTS responsavel_aluno (
+  responsavel_id INT NOT NULL,
+  aluno_id INT NOT NULL,
+  parentesco VARCHAR(30) NOT NULL,
+  criado_em DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (responsavel_id, aluno_id),
+  CONSTRAINT fk_ra_responsavel FOREIGN KEY (responsavel_id) REFERENCES responsaveis(id),
+  CONSTRAINT fk_ra_aluno FOREIGN KEY (aluno_id) REFERENCES alunos(id)
+);

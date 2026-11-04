@@ -56,6 +56,53 @@ function criarRotasResponsaveis(responsavelRepository) {
     }
   });
 
+    // ----- Vínculos responsável ↔ aluno -----
+
+  router.post('/:id/alunos', async (req, res) => {
+    const { alunoId, parentesco } = req.body;
+
+    if (!alunoId || !parentesco) {
+      return res.status(400).json({ erro: 'alunoId e parentesco são obrigatórios.' });
+    }
+
+    try {
+      await responsavelRepository.vincularAluno(req.params.id, alunoId, parentesco);
+      res.status(201).json({ mensagem: 'Aluno vinculado ao responsável.' });
+    } catch (erro) {
+      if (erro.code === 'ER_DUP_ENTRY') {
+        return res.status(409).json({ erro: 'Esse aluno já está vinculado a esse responsável.' });
+      }
+      if (erro.code === 'ER_NO_REFERENCED_ROW_2') {
+        return res.status(404).json({ erro: 'Responsável ou aluno não encontrado.' });
+      }
+      console.error(erro);
+      res.status(500).json({ erro: 'Erro ao vincular aluno.' });
+    }
+  });
+
+  router.get('/:id/alunos', async (req, res) => {
+    try {
+      const alunos = await responsavelRepository.listarAlunos(req.params.id);
+      res.json(alunos);
+    } catch (erro) {
+      console.error(erro);
+      res.status(500).json({ erro: 'Erro ao listar alunos do responsável.' });
+    }
+  });
+
+  router.delete('/:id/alunos/:alunoId', async (req, res) => {
+    try {
+      const removido = await responsavelRepository.desvincularAluno(req.params.id, req.params.alunoId);
+      if (!removido) {
+        return res.status(404).json({ erro: 'Vínculo não encontrado.' });
+      }
+      res.status(204).send();
+    } catch (erro) {
+      console.error(erro);
+      res.status(500).json({ erro: 'Erro ao desvincular aluno.' });
+    }
+  });
+
   return router;
 }
 
