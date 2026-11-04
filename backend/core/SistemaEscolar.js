@@ -12,6 +12,9 @@ const criarRotasUsuarios = require('../routes/usuarios');
 const ResponsavelRepository = require('../repositories/ResponsavelRepository');
 const criarRotasResponsaveis = require('../routes/responsaveis');
 
+const AreaDisciplinaRepository = require('../repositories/AreaDisciplinaRepository');
+const criarRotasAreasDisciplina = require('../routes/areasDisciplina');
+
 class SistemaEscolar {
   #app;
   #database;
@@ -43,6 +46,8 @@ class SistemaEscolar {
         const responsavelRepository = new ResponsavelRepository(this.#database, usuarioRepository);
     const responsaveisRoutes = criarRotasResponsaveis(responsavelRepository);
     this.#app.use('/responsaveis', responsaveisRoutes);
+        const areaDisciplinaRepository = new AreaDisciplinaRepository(this.#database);
+    this.#app.use('/areas', criarRotasAreasDisciplina(areaDisciplinaRepository));
     this.#app.get('/', (req, res) => {
       res.send('API rodando');
     });

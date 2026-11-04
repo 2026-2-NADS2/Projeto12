@@ -49,3 +49,10 @@ CREATE TABLE IF NOT EXISTS responsavel_aluno (
   CONSTRAINT fk_ra_responsavel FOREIGN KEY (responsavel_id) REFERENCES responsaveis(id),
   CONSTRAINT fk_ra_aluno FOREIGN KEY (aluno_id) REFERENCES alunos(id)
 );
+
+CREATE TABLE IF NOT EXISTS areas_disciplina (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nome VARCHAR(100) NOT NULL UNIQUE,
+  ativo TINYINT(1) NOT NULL DEFAULT 1,
+  criado_em DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
