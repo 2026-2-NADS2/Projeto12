@@ -18,6 +18,9 @@ const criarRotasAreasDisciplina = require('../routes/areasDisciplina');
 const DisciplinaRepository = require('../repositories/DisciplinaRepository');
 const criarRotasDisciplinas = require('../routes/disciplinas');
 
+const TurmaRepository = require('../repositories/TurmaRepository');
+const criarRotasTurmas = require('../routes/turmas');
+
 class SistemaEscolar {
   #app;
   #database;
@@ -56,7 +59,8 @@ class SistemaEscolar {
     });
         const disciplinaRepository = new DisciplinaRepository(this.#database);
     this.#app.use('/disciplinas', criarRotasDisciplinas(disciplinaRepository, areaDisciplinaRepository));
-
+        const turmaRepository = new TurmaRepository(this.#database);
+    this.#app.use('/turmas', criarRotasTurmas(turmaRepository)); 
   }
 
   async iniciar() {

@@ -65,3 +65,15 @@ CREATE TABLE IF NOT EXISTS disciplinas (
   criado_em DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT fk_disciplinas_area FOREIGN KEY (area_id) REFERENCES areas_disciplina(id)
 );
+
+CREATE TABLE IF NOT EXISTS turmas (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  ano_serie TINYINT NOT NULL,
+  identificacao VARCHAR(10) NOT NULL,
+  turno ENUM('manha', 'tarde', 'integral') NOT NULL,
+  ano_letivo SMALLINT NOT NULL,
+  ativo TINYINT(1) NOT NULL DEFAULT 1,
+  criado_em DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT uq_turmas_serie_ident_ano UNIQUE (ano_serie, identificacao, ano_letivo),
+  CONSTRAINT chk_turmas_ano_serie CHECK (ano_serie BETWEEN 1 AND 9)
+);
