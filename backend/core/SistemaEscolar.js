@@ -15,6 +15,9 @@ const criarRotasResponsaveis = require('../routes/responsaveis');
 const AreaDisciplinaRepository = require('../repositories/AreaDisciplinaRepository');
 const criarRotasAreasDisciplina = require('../routes/areasDisciplina');
 
+const DisciplinaRepository = require('../repositories/DisciplinaRepository');
+const criarRotasDisciplinas = require('../routes/disciplinas');
+
 class SistemaEscolar {
   #app;
   #database;
@@ -51,6 +54,9 @@ class SistemaEscolar {
     this.#app.get('/', (req, res) => {
       res.send('API rodando');
     });
+        const disciplinaRepository = new DisciplinaRepository(this.#database);
+    this.#app.use('/disciplinas', criarRotasDisciplinas(disciplinaRepository, areaDisciplinaRepository));
+
   }
 
   async iniciar() {

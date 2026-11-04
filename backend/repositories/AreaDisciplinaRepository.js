@@ -38,6 +38,12 @@ class AreaDisciplinaRepository {
       criadoEm: linha.criado_em
     });
   }
+
+    async buscarPorId(id) {
+    const sql = 'SELECT id, nome, ativo, criado_em FROM areas_disciplina WHERE id = ? AND ativo = 1';
+    const linhas = await this.#database.query(sql, [id]);
+    return linhas.length > 0 ? this.#linhaParaArea(linhas[0]) : null;
+  }
 }
 
 module.exports = AreaDisciplinaRepository;
