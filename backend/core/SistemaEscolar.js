@@ -21,6 +21,9 @@ const criarRotasDisciplinas = require('../routes/disciplinas');
 const TurmaRepository = require('../repositories/TurmaRepository');
 const criarRotasTurmas = require('../routes/turmas');
 
+const TagRepository = require('../repositories/TagRepository');
+const criarRotasTags = require('../routes/tags');
+
 class SistemaEscolar {
   #app;
   #database;
@@ -37,30 +40,39 @@ class SistemaEscolar {
     this.#app.use(express.json());
   }
 
-  #configurarRotas() {
+    #configurarRotas() {
+    // Usuários e autenticação
     const usuarioRepository = new UsuarioRepository(this.#database);
-    const usuariosRoutes = criarRotasUsuarios(usuarioRepository);
-    const authRoutes = criarRotasAuth(usuarioRepository);
-    this.#app.use('/auth', authRoutes);
+    this.#app.use('/auth', criarRotasAuth(usuarioRepository));
+    this.#app.use('/usuarios', criarRotasUsuarios(usuarioRepository));
+
+    // Pessoas
     const alunoRepository = new AlunoRepository(this.#database);
-    const alunosRoutes = criarRotasAlunos(alunoRepository);
-    this.#app.use('/alunos', alunosRoutes);
-    this.#app.use('/usuarios', usuariosRoutes);
+    this.#app.use('/alunos', criarRotasAlunos(alunoRepository));
+
     const professorRepository = new ProfessorRepository(this.#database, usuarioRepository);
-    const professoresRoutes = criarRotasProfessores(professorRepository);
-    this.#app.use('/professores', professoresRoutes);
-        const responsavelRepository = new ResponsavelRepository(this.#database, usuarioRepository);
-    const responsaveisRoutes = criarRotasResponsaveis(responsavelRepository);
-    this.#app.use('/responsaveis', responsaveisRoutes);
-        const areaDisciplinaRepository = new AreaDisciplinaRepository(this.#database);
+    this.#app.use('/professores', criarRotasProfessores(professorRepository));
+
+    const responsavelRepository = new ResponsavelRepository(this.#database, usuarioRepository);
+    this.#app.use('/responsaveis', criarRotasResponsaveis(responsavelRepository));
+
+    // Estrutura acadêmica
+    const areaDisciplinaRepository = new AreaDisciplinaRepository(this.#database);
     this.#app.use('/areas', criarRotasAreasDisciplina(areaDisciplinaRepository));
+
+    const disciplinaRepository = new DisciplinaRepository(this.#database);
+    this.#app.use('/disciplinas', criarRotasDisciplinas(disciplinaRepository, areaDisciplinaRepository));
+
+    const turmaRepository = new TurmaRepository(this.#database);
+    this.#app.use('/turmas', criarRotasTurmas(turmaRepository));
+
+    const tagRepository = new TagRepository(this.#database);
+    this.#app.use('/tags', criarRotasTags(tagRepository));
+
+    // Rota de verificação: confirma que a API está no ar
     this.#app.get('/', (req, res) => {
       res.send('API rodando');
     });
-        const disciplinaRepository = new DisciplinaRepository(this.#database);
-    this.#app.use('/disciplinas', criarRotasDisciplinas(disciplinaRepository, areaDisciplinaRepository));
-        const turmaRepository = new TurmaRepository(this.#database);
-    this.#app.use('/turmas', criarRotasTurmas(turmaRepository)); 
   }
 
   async iniciar() {
@@ -74,7 +86,11 @@ class SistemaEscolar {
     this.#configurarMiddlewares();
     this.#configurarRotas();
 
-    this.#app.listen(this.#porta, () => {
+    this.#app.listen(this.#porta, (erro) => {
+      if (erro) {
+        console.error(`Não foi possível iniciar o servidor na porta ${this.#porta}:`, erro.message);
+        process.exit(1);
+      }
       console.log(`Servidor rodando na porta ${this.#porta}`);
     });
   }

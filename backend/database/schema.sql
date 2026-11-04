@@ -77,3 +77,11 @@ CREATE TABLE IF NOT EXISTS turmas (
   CONSTRAINT uq_turmas_serie_ident_ano UNIQUE (ano_serie, identificacao, ano_letivo),
   CONSTRAINT chk_turmas_ano_serie CHECK (ano_serie BETWEEN 1 AND 9)
 );
+
+CREATE TABLE IF NOT EXISTS tags (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nome VARCHAR(50) NOT NULL UNIQUE,
+  descricao VARCHAR(255) NULL,
+  ativo TINYINT(1) NOT NULL DEFAULT 1,
+  criado_em DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
