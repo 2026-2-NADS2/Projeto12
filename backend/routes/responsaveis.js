@@ -1,11 +1,14 @@
 const express = require('express');
 const { verificarToken, somentePerfis } = require('../middlewares/autenticacao');
+const { validarId } = require('../middlewares/validacao');
 
 function criarRotasResponsaveis(responsavelRepository) {
   const router = express.Router();
 
   router.use(verificarToken, somentePerfis('administrador'));
-
+    router.param('id', validarId);
+  router.param('alunoId', validarId);
+  
   router.post('/', async (req, res) => {
     const { nome, email, senha } = req.body;
     let { telefone } = req.body;

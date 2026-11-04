@@ -1,11 +1,13 @@
 const express = require('express');
 const { verificarToken, somentePerfis } = require('../middlewares/autenticacao');
+const { validarId } = require('../middlewares/validacao');
 
 function criarRotasProfessores(professorRepository) {
   const router = express.Router();
 
   router.use(verificarToken, somentePerfis('administrador'));
-
+  router.param('id', validarId);
+  
   router.post('/', async (req, res) => {
     const { nome, email, senha, registroFuncional } = req.body;
 
