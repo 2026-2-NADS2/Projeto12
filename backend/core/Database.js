@@ -2,27 +2,32 @@ require('dotenv').config();
 const mysql = require('mysql2');
 
 class Database {
-  #connection; // atributo privado — só a própria classe acessa diretamente
+  #pool; // atributo privado: conjunto de conexões reutilizáveis
 
   constructor() {
-    this.#connection = null;
+    this.#pool = null;
   }
 
   conectar() {
-    return new Promise((resolve, reject) => {
-      this.#connection = mysql.createConnection({
-        host: process.env.DB_HOST,
-        user: process.env.DB_USER,
-        password: process.env.DB_PASSWORD,
-        database: process.env.DB_NAME,
-        port: process.env.DB_PORT
-      });
+    this.#pool = mysql.createPool({
+      host: process.env.DB_HOST,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
+      port: process.env.DB_PORT,
+      waitForConnections: true, // se todas estiverem ocupadas, espera uma ficar livre
+      connectionLimit: 10       // no máximo 10 conexões abertas ao mesmo tempo
+    });
 
-      this.#connection.connect((erro) => {
+    // O pool só abre conexões quando precisa. Pedimos uma agora para testar
+    // as credenciais logo na inicialização, e a devolvemos em seguida.
+    return new Promise((resolve, reject) => {
+      this.#pool.getConnection((erro, conexao) => {
         if (erro) {
           reject(erro);
           return;
         }
+        conexao.release();
         console.log('Conectado ao MySQL!');
         resolve();
       });
@@ -31,7 +36,7 @@ class Database {
 
   query(sql, valores = []) {
     return new Promise((resolve, reject) => {
-      this.#connection.query(sql, valores, (erro, resultado) => {
+      this.#pool.query(sql, valores, (erro, resultado) => {
         if (erro) {
           reject(erro);
           return;
