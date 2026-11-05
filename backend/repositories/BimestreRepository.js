@@ -49,6 +49,11 @@ class BimestreRepository {
     return linhas.length > 0 ? linhas[0].numero : null;
   }
 
+    async buscarPorId(id) {
+    const linhas = await this.#database.query(`${SELECT_BIMESTRE} WHERE id = ?`, [id]);
+    return linhas.length > 0 ? this.#linhaParaBimestre(linhas[0]) : null;
+  }
+
   #linhaParaBimestre(linha) {
     return new Bimestre({
       id: linha.id,

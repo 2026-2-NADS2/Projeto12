@@ -45,6 +45,34 @@ class Database {
       });
     });
   }
+    // Executa várias consultas como uma unidade: ou todas são gravadas, ou nenhuma.
+  // "trabalho" é uma função que recebe "executar" para rodar SQL dentro da transação.
+  transacao(trabalho) {
+    return new Promise((resolve, reject) => {
+      this.#pool.getConnection(async (erro, conexao) => {
+        if (erro) {
+          reject(erro);
+          return;
+        }
+
+        const executar = (sql, valores = []) => new Promise((ok, falha) => {
+          conexao.query(sql, valores, (e, resultado) => (e ? falha(e) : ok(resultado)));
+        });
+
+        try {
+          await executar('START TRANSACTION');
+          const resultado = await trabalho(executar);
+          await executar('COMMIT');
+          resolve(resultado);
+        } catch (e) {
+          await executar('ROLLBACK').catch(() => {});
+          reject(e);
+        } finally {
+          conexao.release();
+        }
+      });
+    });
+  }
 }
 
 module.exports = Database;

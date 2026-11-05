@@ -106,6 +106,50 @@ class TurmaRepository {
     return resultado.affectedRows > 0;
   }
 
+    // Devolve o id do professor que leciona a disciplina na turma, ou null
+  async professorDaDisciplina(turmaId, disciplinaId) {
+    const linhas = await this.#database.query(
+      'SELECT professor_id FROM turma_disciplina_professor WHERE turma_id = ? AND disciplina_id = ?',
+      [turmaId, disciplinaId]
+    );
+    return linhas.length > 0 ? linhas[0].professor_id : null;
+  }
+
+  async alunoEstaNaTurma(turmaId, alunoId) {
+    const linhas = await this.#database.query(
+      'SELECT 1 FROM turma_aluno WHERE turma_id = ? AND aluno_id = ?',
+      [turmaId, alunoId]
+    );
+    return linhas.length > 0;
+  }
+
+  // "Minhas turmas": todas as combinações turma + disciplina de um professor
+  async listarAlocacoesDoProfessor(professorId) {
+    const sql = `
+      SELECT t.id AS turma_id, t.ano_serie, t.identificacao, t.turno, t.ano_letivo,
+             d.id AS disciplina_id, d.nome AS disciplina_nome
+      FROM turma_disciplina_professor tdp
+      JOIN turmas t ON t.id = tdp.turma_id AND t.ativo = 1
+      JOIN disciplinas d ON d.id = tdp.disciplina_id
+      WHERE tdp.professor_id = ?
+      ORDER BY t.ano_letivo DESC, t.ano_serie, t.identificacao, d.nome
+    `;
+    const linhas = await this.#database.query(sql, [professorId]);
+    return linhas.map((linha) => {
+      const turma = new Turma({
+        id: linha.turma_id,
+        anoSerie: linha.ano_serie,
+        identificacao: linha.identificacao,
+        turno: linha.turno,
+        anoLetivo: linha.ano_letivo
+      });
+      return {
+        turma: { id: turma.id, nome: turma.nome, turno: turma.turno, anoLetivo: turma.anoLetivo },
+        disciplina: { id: linha.disciplina_id, nome: linha.disciplina_nome }
+      };
+    });
+  }
+
   #linhaParaTurma(linha) {
     return new Turma({
       id: linha.id,

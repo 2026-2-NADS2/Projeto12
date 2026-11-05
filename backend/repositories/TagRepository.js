@@ -39,6 +39,14 @@ class TagRepository {
     await this.#database.query('UPDATE tags SET ativo = 0 WHERE id = ?', [id]);
   }
 
+    async contarAtivas(ids) {
+    const linhas = await this.#database.query(
+      'SELECT COUNT(*) AS total FROM tags WHERE ativo = 1 AND id IN (?)',
+      [ids]
+    );
+    return linhas[0].total;
+  }
+
   #linhaParaTag(linha) {
     return new Tag({
       id: linha.id,

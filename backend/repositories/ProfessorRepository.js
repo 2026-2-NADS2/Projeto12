@@ -61,6 +61,17 @@ class ProfessorRepository {
     return linhas.length > 0 ? this.#linhaParaProfessor(linhas[0]) : null;
   }
 
+    async buscarPorUsuarioId(usuarioId) {
+    const sql = `
+      SELECT p.id, p.usuario_id, p.registro_funcional, p.ativo, p.criado_em, u.nome, u.email
+      FROM professores p
+      JOIN usuarios u ON u.id = p.usuario_id
+      WHERE p.usuario_id = ? AND p.ativo = 1
+    `;
+    const linhas = await this.#database.query(sql, [usuarioId]);
+    return linhas.length > 0 ? this.#linhaParaProfessor(linhas[0]) : null;
+  }
+
   #linhaParaProfessor(linha) {
     return new Professor({
       id: linha.id,
