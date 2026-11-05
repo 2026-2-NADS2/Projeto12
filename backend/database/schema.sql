@@ -96,3 +96,15 @@ CREATE TABLE IF NOT EXISTS turma_aluno (
   CONSTRAINT fk_ta_turma FOREIGN KEY (turma_id) REFERENCES turmas(id),
   CONSTRAINT fk_ta_aluno FOREIGN KEY (aluno_id) REFERENCES alunos(id)
 );
+
+CREATE TABLE IF NOT EXISTS turma_disciplina_professor (
+  turma_id INT NOT NULL,
+  disciplina_id INT NOT NULL,
+  professor_id INT NOT NULL,
+  criado_em DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (turma_id, disciplina_id),
+  INDEX idx_tdp_professor (professor_id),
+  CONSTRAINT fk_tdp_turma FOREIGN KEY (turma_id) REFERENCES turmas(id),
+  CONSTRAINT fk_tdp_disciplina FOREIGN KEY (disciplina_id) REFERENCES disciplinas(id),
+  CONSTRAINT fk_tdp_professor FOREIGN KEY (professor_id) REFERENCES professores(id)
+);

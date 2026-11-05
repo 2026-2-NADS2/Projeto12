@@ -71,6 +71,41 @@ class TurmaRepository {
     return resultado.affectedRows > 0;
   }
 
+    async alocarDisciplina(turmaId, disciplinaId, professorId) {
+    const sql = 'INSERT INTO turma_disciplina_professor (turma_id, disciplina_id, professor_id) VALUES (?, ?, ?)';
+    await this.#database.query(sql, [turmaId, disciplinaId, professorId]);
+  }
+
+  async trocarProfessor(turmaId, disciplinaId, professorId) {
+    const sql = 'UPDATE turma_disciplina_professor SET professor_id = ? WHERE turma_id = ? AND disciplina_id = ?';
+    const resultado = await this.#database.query(sql, [professorId, turmaId, disciplinaId]);
+    return resultado.affectedRows > 0;
+  }
+
+  async listarDisciplinas(turmaId) {
+    const sql = `
+      SELECT d.id AS disciplina_id, d.nome AS disciplina_nome,
+             p.id AS professor_id, u.nome AS professor_nome
+      FROM turma_disciplina_professor tdp
+      JOIN disciplinas d ON d.id = tdp.disciplina_id
+      JOIN professores p ON p.id = tdp.professor_id
+      JOIN usuarios u ON u.id = p.usuario_id
+      WHERE tdp.turma_id = ?
+      ORDER BY d.nome
+    `;
+    const linhas = await this.#database.query(sql, [turmaId]);
+    return linhas.map((linha) => ({
+      disciplina: { id: linha.disciplina_id, nome: linha.disciplina_nome },
+      professor: { id: linha.professor_id, nome: linha.professor_nome }
+    }));
+  }
+
+  async removerDisciplina(turmaId, disciplinaId) {
+    const sql = 'DELETE FROM turma_disciplina_professor WHERE turma_id = ? AND disciplina_id = ?';
+    const resultado = await this.#database.query(sql, [turmaId, disciplinaId]);
+    return resultado.affectedRows > 0;
+  }
+
   #linhaParaTurma(linha) {
     return new Turma({
       id: linha.id,

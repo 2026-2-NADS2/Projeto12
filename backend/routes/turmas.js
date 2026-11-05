@@ -4,6 +4,9 @@ const { validarId } = require('../middlewares/validacao');
 
 const TURNOS_VALIDOS = ['manha', 'tarde', 'integral'];
 
+// Confere se um valor do corpo da requisição é um id válido (inteiro positivo)
+const ehIdValido = (valor) => Number.isInteger(valor) && valor > 0;
+
 // Lê e valida o corpo da requisição.
 // Devolve { erro } se algo estiver errado, ou { dados } já normalizados.
 function lerTurma(body) {
@@ -26,13 +29,14 @@ function lerTurma(body) {
   return { dados: { anoSerie, identificacao, turno, anoLetivo } };
 }
 
-function criarRotasTurmas(turmaRepository, alunoRepository) {
+function criarRotasTurmas({ turmaRepository, alunoRepository, disciplinaRepository, professorRepository }) { 
+    
   const router = express.Router();
 
   router.use(verificarToken, somentePerfis('administrador'));
   router.param('id', validarId);
-    router.param('alunoId', validarId);
-
+  router.param('alunoId', validarId);
+  router.param('disciplinaId', validarId);
   router.post('/', async (req, res) => {
     const { erro, dados } = lerTurma(req.body);
     if (erro) {
@@ -161,6 +165,94 @@ function criarRotasTurmas(turmaRepository, alunoRepository) {
     } catch (e) {
       console.error(e);
       res.status(500).json({ erro: 'Erro ao remover aluno da turma.' });
+    }
+  });
+
+    // ----- Disciplinas e professores da turma (RF03) -----
+
+  router.post('/:id/disciplinas', async (req, res) => {
+    const { disciplinaId, professorId } = req.body;
+
+    if (!ehIdValido(disciplinaId) || !ehIdValido(professorId)) {
+      return res.status(400).json({ erro: 'disciplinaId e professorId devem ser números inteiros positivos.' });
+    }
+
+    try {
+      const turma = await turmaRepository.buscarPorId(req.params.id);
+      if (!turma) {
+        return res.status(404).json({ erro: 'Turma não encontrada.' });
+      }
+
+      const disciplina = await disciplinaRepository.buscarPorId(disciplinaId);
+      if (!disciplina) {
+        return res.status(404).json({ erro: 'Disciplina não encontrada.' });
+      }
+
+      const professor = await professorRepository.buscarPorId(professorId);
+      if (!professor) {
+        return res.status(404).json({ erro: 'Professor não encontrado.' });
+      }
+
+      await turmaRepository.alocarDisciplina(turma.id, disciplina.id, professor.id);
+      res.status(201).json({ mensagem: `${disciplina.nome} na turma ${turma.nome} com ${professor.nome}.` });
+    } catch (e) {
+      if (e.code === 'ER_DUP_ENTRY') {
+        return res.status(409).json({ erro: 'Essa disciplina já tem professor nesta turma. Para trocar, use PUT.' });
+      }
+      console.error(e);
+      res.status(500).json({ erro: 'Erro ao alocar disciplina.' });
+    }
+  });
+
+  router.get('/:id/disciplinas', async (req, res) => {
+    try {
+      const turma = await turmaRepository.buscarPorId(req.params.id);
+      if (!turma) {
+        return res.status(404).json({ erro: 'Turma não encontrada.' });
+      }
+
+      const disciplinas = await turmaRepository.listarDisciplinas(turma.id);
+      res.json({ turma: turma.nome, anoLetivo: turma.anoLetivo, disciplinas });
+    } catch (e) {
+      console.error(e);
+      res.status(500).json({ erro: 'Erro ao listar disciplinas da turma.' });
+    }
+  });
+
+  router.put('/:id/disciplinas/:disciplinaId', async (req, res) => {
+    const { professorId } = req.body;
+
+    if (!ehIdValido(professorId)) {
+      return res.status(400).json({ erro: 'professorId deve ser um número inteiro positivo.' });
+    }
+
+    try {
+      const professor = await professorRepository.buscarPorId(professorId);
+      if (!professor) {
+        return res.status(404).json({ erro: 'Professor não encontrado.' });
+      }
+
+      const trocou = await turmaRepository.trocarProfessor(req.params.id, req.params.disciplinaId, professor.id);
+      if (!trocou) {
+        return res.status(404).json({ erro: 'Essa disciplina não está alocada nesta turma.' });
+      }
+      res.json({ mensagem: `Professor alterado para ${professor.nome}.` });
+    } catch (e) {
+      console.error(e);
+      res.status(500).json({ erro: 'Erro ao trocar professor.' });
+    }
+  });
+
+  router.delete('/:id/disciplinas/:disciplinaId', async (req, res) => {
+    try {
+      const removido = await turmaRepository.removerDisciplina(req.params.id, req.params.disciplinaId);
+      if (!removido) {
+        return res.status(404).json({ erro: 'Essa disciplina não está alocada nesta turma.' });
+      }
+      res.status(204).send();
+    } catch (e) {
+      console.error(e);
+      res.status(500).json({ erro: 'Erro ao remover disciplina da turma.' });
     }
   });
 

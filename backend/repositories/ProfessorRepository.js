@@ -50,6 +50,17 @@ class ProfessorRepository {
     await this.#database.query(sql, [id]);
   }
 
+    async buscarPorId(id) {
+    const sql = `
+      SELECT p.id, p.usuario_id, p.registro_funcional, p.ativo, p.criado_em, u.nome, u.email
+      FROM professores p
+      JOIN usuarios u ON u.id = p.usuario_id
+      WHERE p.id = ? AND p.ativo = 1
+    `;
+    const linhas = await this.#database.query(sql, [id]);
+    return linhas.length > 0 ? this.#linhaParaProfessor(linhas[0]) : null;
+  }
+
   #linhaParaProfessor(linha) {
     return new Professor({
       id: linha.id,
