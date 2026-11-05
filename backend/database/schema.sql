@@ -173,3 +173,16 @@ CREATE TABLE IF NOT EXISTS historico_auditoria (
   INDEX idx_hist_entidade (entidade, entidade_id, criado_em),
   CONSTRAINT fk_hist_usuario FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
 );
+
+CREATE TABLE IF NOT EXISTS ciencias (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  responsavel_id INT NOT NULL,
+  aluno_id INT NOT NULL,
+  bimestre_id INT NOT NULL,
+  retorno VARCHAR(1000) NULL,
+  registrada_em DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT uq_ciencia UNIQUE (responsavel_id, aluno_id, bimestre_id),
+  CONSTRAINT fk_ciencia_responsavel FOREIGN KEY (responsavel_id) REFERENCES responsaveis(id),
+  CONSTRAINT fk_ciencia_aluno FOREIGN KEY (aluno_id) REFERENCES alunos(id),
+  CONSTRAINT fk_ciencia_bimestre FOREIGN KEY (bimestre_id) REFERENCES bimestres(id)
+);

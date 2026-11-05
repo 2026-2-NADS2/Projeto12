@@ -33,6 +33,9 @@ const criarRotasAreaProfessor = require('../routes/areaProfessor');
 
 const RevisaoService = require('../services/RevisaoService');
 const criarRotasRevisao = require('../routes/revisao');
+const AreaResponsavelService = require('../services/AreaResponsavelService');
+const GeradorPdf = require('../services/GeradorPdf');
+const criarRotasAreaResponsavel = require('../routes/areaResponsavel');
 
 class SistemaEscolar {
   #app;
@@ -101,6 +104,16 @@ class SistemaEscolar {
         // Revisão e publicação (RF06) com auditoria (RF07)
     const revisaoService = new RevisaoService({ acompanhamentoRepository, tagRepository });
     this.#app.use('/revisao', criarRotasRevisao(revisaoService));
+
+        // Área do responsável (RF08, RF09, RF12)
+    const areaResponsavelService = new AreaResponsavelService({
+      responsavelRepository,
+      acompanhamentoRepository,
+      turmaRepository,
+      bimestreRepository,
+      geradorPdf: new GeradorPdf()
+    });
+    this.#app.use('/responsavel', criarRotasAreaResponsavel(areaResponsavelService));
 
     // Rota de verificação: confirma que a API está no ar
     this.#app.get('/', (req, res) => {

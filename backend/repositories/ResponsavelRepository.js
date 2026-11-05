@@ -82,6 +82,46 @@ class ResponsavelRepository {
     return resultado.affectedRows > 0;
   }
 
+    async buscarPorUsuarioId(usuarioId) {
+    const sql = `
+      SELECT r.id, r.usuario_id, r.telefone, r.ativo, r.criado_em, u.nome, u.email
+      FROM responsaveis r
+      JOIN usuarios u ON u.id = r.usuario_id
+      WHERE r.usuario_id = ? AND r.ativo = 1
+    `;
+    const linhas = await this.#database.query(sql, [usuarioId]);
+    return linhas.length > 0 ? this.#linhaParaResponsavel(linhas[0]) : null;
+  }
+
+  // Devolve o vínculo (com dados do aluno) se o aluno for deste responsável; senão, null
+  async buscarVinculo(responsavelId, alunoId) {
+    const linhas = await this.#database.query(
+      `SELECT a.id, a.nome, a.matricula, ra.parentesco
+       FROM responsavel_aluno ra
+       JOIN alunos a ON a.id = ra.aluno_id AND a.ativo = 1
+       WHERE ra.responsavel_id = ? AND ra.aluno_id = ?`,
+      [responsavelId, alunoId]
+    );
+    if (linhas.length === 0) return null;
+    const l = linhas[0];
+    return { alunoId: l.id, nome: l.nome, matricula: l.matricula, parentesco: l.parentesco };
+  }
+
+  async registrarCiencia(responsavelId, alunoId, bimestreId, retorno) {
+    await this.#database.query(
+      'INSERT INTO ciencias (responsavel_id, aluno_id, bimestre_id, retorno) VALUES (?, ?, ?, ?)',
+      [responsavelId, alunoId, bimestreId, retorno]
+    );
+  }
+
+  async buscarCiencia(responsavelId, alunoId, bimestreId) {
+    const linhas = await this.#database.query(
+      'SELECT retorno, registrada_em FROM ciencias WHERE responsavel_id = ? AND aluno_id = ? AND bimestre_id = ?',
+      [responsavelId, alunoId, bimestreId]
+    );
+    return linhas.length > 0 ? { registradaEm: linhas[0].registrada_em, retorno: linhas[0].retorno } : null;
+  }
+
   #linhaParaResponsavel(linha) {
     return new Responsavel({
       id: linha.id,

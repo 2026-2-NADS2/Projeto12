@@ -150,6 +150,25 @@ class TurmaRepository {
     });
   }
 
+    // Turma do aluno num ano letivo; sem ano, a turma mais recente
+  async turmaDoAluno(alunoId, anoLetivo = null) {
+    let sql = `
+      SELECT t.id, t.ano_serie, t.identificacao, t.turno, t.ano_letivo, t.ativo, t.criado_em
+      FROM turma_aluno ta
+      JOIN turmas t ON t.id = ta.turma_id
+      WHERE ta.aluno_id = ?
+    `;
+    const valores = [alunoId];
+    if (anoLetivo) {
+      sql += ' AND ta.ano_letivo = ?';
+      valores.push(anoLetivo);
+    }
+    sql += ' ORDER BY ta.ano_letivo DESC LIMIT 1';
+
+    const linhas = await this.#database.query(sql, valores);
+    return linhas.length > 0 ? this.#linhaParaTurma(linhas[0]) : null;
+  }
+
   #linhaParaTurma(linha) {
     return new Turma({
       id: linha.id,

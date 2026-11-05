@@ -109,6 +109,30 @@ class AcompanhamentoRepository {
     }));
   }
 
+    // Somente PUBLICADOS: é o que o responsável pode ver
+  async listarPublicadosDoAluno(alunoId, bimestreId) {
+    const linhas = await this.#database.query(
+      `SELECT ac.id, ac.media, ac.descricao, ac.publicado_em,
+              d.nome AS disciplina_nome, u.nome AS professor_nome
+       FROM acompanhamentos ac
+       JOIN disciplinas d ON d.id = ac.disciplina_id
+       JOIN professores p ON p.id = ac.professor_id
+       JOIN usuarios u ON u.id = p.usuario_id
+       WHERE ac.aluno_id = ? AND ac.bimestre_id = ? AND ac.status = 'publicado'
+       ORDER BY d.nome`,
+      [alunoId, bimestreId]
+    );
+    const tagsPorId = await this.#tagsPorAcompanhamento(linhas.map((l) => l.id));
+    return linhas.map((l) => ({
+      disciplina: l.disciplina_nome,
+      professor: l.professor_nome,
+      media: Number(l.media),
+      descricao: l.descricao,
+      tags: tagsPorId.get(l.id) ?? [],
+      publicadoEm: l.publicado_em
+    }));
+  }
+
   // ===== Gravações: cada uma numa transação, junto com o registro no histórico =====
 
   async salvarRascunho({ alunoId, turmaId, disciplinaId, professorId, bimestreId, descricao, media, tagIds, usuarioId, anterior }) {
