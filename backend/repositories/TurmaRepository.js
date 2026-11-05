@@ -48,6 +48,29 @@ class TurmaRepository {
     await this.#database.query('UPDATE turmas SET ativo = 0 WHERE id = ?', [id]);
   }
 
+    async matricularAluno(turmaId, alunoId, anoLetivo) {
+    const sql = 'INSERT INTO turma_aluno (turma_id, aluno_id, ano_letivo) VALUES (?, ?, ?)';
+    await this.#database.query(sql, [turmaId, alunoId, anoLetivo]);
+  }
+
+  async listarAlunos(turmaId) {
+    const sql = `
+      SELECT a.id, a.nome, a.matricula
+      FROM turma_aluno ta
+      JOIN alunos a ON a.id = ta.aluno_id
+      WHERE ta.turma_id = ? AND a.ativo = 1
+      ORDER BY a.nome
+    `;
+    const linhas = await this.#database.query(sql, [turmaId]);
+    return linhas.map((linha) => ({ alunoId: linha.id, nome: linha.nome, matricula: linha.matricula }));
+  }
+
+  async removerAluno(turmaId, alunoId) {
+    const sql = 'DELETE FROM turma_aluno WHERE turma_id = ? AND aluno_id = ?';
+    const resultado = await this.#database.query(sql, [turmaId, alunoId]);
+    return resultado.affectedRows > 0;
+  }
+
   #linhaParaTurma(linha) {
     return new Turma({
       id: linha.id,

@@ -85,3 +85,14 @@ CREATE TABLE IF NOT EXISTS tags (
   ativo TINYINT(1) NOT NULL DEFAULT 1,
   criado_em DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE IF NOT EXISTS turma_aluno (
+  turma_id INT NOT NULL,
+  aluno_id INT NOT NULL,
+  ano_letivo SMALLINT NOT NULL,
+  criado_em DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (turma_id, aluno_id),
+  CONSTRAINT uq_turma_aluno_ano UNIQUE (aluno_id, ano_letivo),
+  CONSTRAINT fk_ta_turma FOREIGN KEY (turma_id) REFERENCES turmas(id),
+  CONSTRAINT fk_ta_aluno FOREIGN KEY (aluno_id) REFERENCES alunos(id)
+);

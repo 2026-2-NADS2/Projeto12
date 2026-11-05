@@ -64,8 +64,7 @@ class SistemaEscolar {
     this.#app.use('/disciplinas', criarRotasDisciplinas(disciplinaRepository, areaDisciplinaRepository));
 
     const turmaRepository = new TurmaRepository(this.#database);
-    this.#app.use('/turmas', criarRotasTurmas(turmaRepository));
-
+    this.#app.use('/turmas', criarRotasTurmas(turmaRepository, alunoRepository));
     const tagRepository = new TagRepository(this.#database);
     this.#app.use('/tags', criarRotasTags(tagRepository));
 
