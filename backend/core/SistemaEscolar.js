@@ -31,6 +31,9 @@ const AcompanhamentoRepository = require('../repositories/AcompanhamentoReposito
 const AcompanhamentoService = require('../services/AcompanhamentoService');
 const criarRotasAreaProfessor = require('../routes/areaProfessor');
 
+const RevisaoService = require('../services/RevisaoService');
+const criarRotasRevisao = require('../routes/revisao');
+
 class SistemaEscolar {
   #app;
   #database;
@@ -94,6 +97,10 @@ class SistemaEscolar {
       tagRepository
     });
     this.#app.use('/professor', criarRotasAreaProfessor(acompanhamentoService));
+
+        // Revisão e publicação (RF06) com auditoria (RF07)
+    const revisaoService = new RevisaoService({ acompanhamentoRepository, tagRepository });
+    this.#app.use('/revisao', criarRotasRevisao(revisaoService));
 
     // Rota de verificação: confirma que a API está no ar
     this.#app.get('/', (req, res) => {

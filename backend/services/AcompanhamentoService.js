@@ -59,8 +59,9 @@ class AcompanhamentoService {
 
     const id = await this.#acompanhamentoRepository.salvarRascunho({
       alunoId, turmaId: turma.id, disciplinaId, professorId: professor.id,
-      bimestreId: bimestre.id, descricao, media, tagIds
-    });
+      bimestreId: bimestre.id, descricao, media, tagIds,
+      usuarioId, anterior: existente ? existente.retrato() : null
+    });   
     return this.#acompanhamentoRepository.buscarPorId(id);
   }
 
@@ -83,8 +84,7 @@ class AcompanhamentoService {
     if (!bimestre.estaAberto()) {
       throw new ErroDeNegocio(403, 'O período de digitação deste bimestre está fechado.');
     }
-
-    await this.#acompanhamentoRepository.marcarEnviado(acompanhamento.id);
+    await this.#acompanhamentoRepository.enviar(acompanhamento.id, usuarioId, acompanhamento.retrato());
     return this.#acompanhamentoRepository.buscarPorId(acompanhamento.id);
   }
 

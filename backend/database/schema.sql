@@ -159,3 +159,17 @@ CREATE TABLE IF NOT EXISTS acompanhamento_tag (
   CONSTRAINT fk_acg_acompanhamento FOREIGN KEY (acompanhamento_id) REFERENCES acompanhamentos(id) ON DELETE CASCADE,
   CONSTRAINT fk_acg_tag FOREIGN KEY (tag_id) REFERENCES tags(id)
 );
+
+CREATE TABLE IF NOT EXISTS historico_auditoria (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  entidade VARCHAR(50) NOT NULL,
+  entidade_id INT NOT NULL,
+  acao VARCHAR(30) NOT NULL,
+  usuario_id INT NOT NULL,
+  estado_anterior JSON NULL,
+  estado_posterior JSON NULL,
+  observacao VARCHAR(500) NULL,
+  criado_em DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  INDEX idx_hist_entidade (entidade, entidade_id, criado_em),
+  CONSTRAINT fk_hist_usuario FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
+);

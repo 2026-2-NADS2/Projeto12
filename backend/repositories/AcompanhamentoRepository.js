@@ -1,4 +1,22 @@
 const Acompanhamento = require('../models/Acompanhamento');
+const Turma = require('../models/Turma');
+
+// Acompanhamento com os nomes de tudo o que ele referencia (usado na revisão)
+const SELECT_DETALHE = `
+  SELECT ac.*,
+         a.nome AS aluno_nome, a.matricula,
+         t.ano_serie, t.identificacao, t.ano_letivo,
+         d.nome AS disciplina_nome,
+         u.nome AS professor_nome,
+         b.numero AS bimestre_numero
+  FROM acompanhamentos ac
+  JOIN alunos a ON a.id = ac.aluno_id
+  JOIN turmas t ON t.id = ac.turma_id
+  JOIN disciplinas d ON d.id = ac.disciplina_id
+  JOIN professores p ON p.id = ac.professor_id
+  JOIN usuarios u ON u.id = p.usuario_id
+  JOIN bimestres b ON b.id = ac.bimestre_id
+`;
 
 class AcompanhamentoRepository {
   #database;
@@ -6,6 +24,8 @@ class AcompanhamentoRepository {
   constructor(database) {
     this.#database = database;
   }
+
+  // ===== Consultas =====
 
   async buscarPorId(id) {
     const linhas = await this.#database.query('SELECT * FROM acompanhamentos WHERE id = ?', [id]);
@@ -45,8 +65,53 @@ class AcompanhamentoRepository {
     }));
   }
 
-  // Cria ou atualiza o rascunho e substitui as tags, tudo numa transação
-  async salvarRascunho({ alunoId, turmaId, disciplinaId, professorId, bimestreId, descricao, media, tagIds }) {
+  async buscarDetalhe(id) {
+    const linhas = await this.#database.query(`${SELECT_DETALHE} WHERE ac.id = ?`, [id]);
+    if (linhas.length === 0) return null;
+    const tagsPorId = await this.#tagsPorAcompanhamento([linhas[0].id]);
+    return this.#linhaParaDetalhe(linhas[0], tagsPorId);
+  }
+
+  // Fila de revisão: status obrigatório, demais filtros opcionais
+  async listarParaRevisao({ status, anoLetivo, bimestre, turmaId, disciplinaId }) {
+    const condicoes = ['ac.status = ?'];
+    const valores = [status];
+
+    if (anoLetivo) { condicoes.push('b.ano_letivo = ?'); valores.push(anoLetivo); }
+    if (bimestre) { condicoes.push('b.numero = ?'); valores.push(bimestre); }
+    if (turmaId) { condicoes.push('ac.turma_id = ?'); valores.push(turmaId); }
+    if (disciplinaId) { condicoes.push('ac.disciplina_id = ?'); valores.push(disciplinaId); }
+
+    const sql = `${SELECT_DETALHE} WHERE ${condicoes.join(' AND ')} ORDER BY ac.enviado_em, a.nome`;
+    const linhas = await this.#database.query(sql, valores);
+    const tagsPorId = await this.#tagsPorAcompanhamento(linhas.map((l) => l.id));
+    return linhas.map((linha) => this.#linhaParaDetalhe(linha, tagsPorId));
+  }
+
+  async listarHistorico(acompanhamentoId) {
+    const linhas = await this.#database.query(
+      `SELECT h.id, h.acao, h.estado_anterior, h.estado_posterior, h.observacao, h.criado_em,
+              u.id AS usuario_id, u.nome AS usuario_nome, u.perfil
+       FROM historico_auditoria h
+       JOIN usuarios u ON u.id = h.usuario_id
+       WHERE h.entidade = 'acompanhamento' AND h.entidade_id = ?
+       ORDER BY h.criado_em, h.id`,
+      [acompanhamentoId]
+    );
+    return linhas.map((l) => ({
+      id: l.id,
+      acao: l.acao,
+      usuario: { id: l.usuario_id, nome: l.usuario_nome, perfil: l.perfil },
+      dataHora: l.criado_em,
+      estadoAnterior: l.estado_anterior,
+      estadoPosterior: l.estado_posterior,
+      observacao: l.observacao
+    }));
+  }
+
+  // ===== Gravações: cada uma numa transação, junto com o registro no histórico =====
+
+  async salvarRascunho({ alunoId, turmaId, disciplinaId, professorId, bimestreId, descricao, media, tagIds, usuarioId, anterior }) {
     return this.#database.transacao(async (executar) => {
       const sql = `
         INSERT INTO acompanhamentos (aluno_id, turma_id, disciplina_id, professor_id, bimestre_id, descricao, media)
@@ -60,23 +125,85 @@ class AcompanhamentoRepository {
       const resultado = await executar(sql, [alunoId, turmaId, disciplinaId, professorId, bimestreId, descricao, media]);
       const id = resultado.insertId;
 
-      await executar('DELETE FROM acompanhamento_tag WHERE acompanhamento_id = ?', [id]);
-      if (tagIds.length > 0) {
-        const pares = tagIds.map((tagId) => [id, tagId]);
-        await executar('INSERT INTO acompanhamento_tag (acompanhamento_id, tag_id) VALUES ?', [pares]);
-      }
+      await this.#substituirTags(executar, id, tagIds);
 
+      const posterior = {
+        descricao,
+        media,
+        status: anterior?.status ?? 'rascunho',
+        observacaoRevisao: anterior?.observacaoRevisao ?? null,
+        tagIds
+      };
+      await this.#registrarHistorico(executar, { id, acao: anterior ? 'editado' : 'criado', usuarioId, anterior, posterior });
       return id;
     });
   }
 
-  async marcarEnviado(id) {
-    const resultado = await this.#database.query(
-      `UPDATE acompanhamentos SET status = 'enviado', enviado_em = NOW()
-       WHERE id = ? AND status IN ('rascunho', 'devolvido')`,
-      [id]
+  async enviar(id, usuarioId, anterior) {
+    return this.#database.transacao(async (executar) => {
+      await executar(`UPDATE acompanhamentos SET status = 'enviado', enviado_em = NOW() WHERE id = ?`, [id]);
+      await this.#registrarHistorico(executar, {
+        id, acao: 'enviado', usuarioId, anterior, posterior: { ...anterior, status: 'enviado' }
+      });
+    });
+  }
+
+  async alterarNaRevisao(id, { descricao, media, tagIds }, usuarioId, anterior) {
+    return this.#database.transacao(async (executar) => {
+      await executar(
+        'UPDATE acompanhamentos SET descricao = ?, media = ?, revisor_id = ?, revisado_em = NOW() WHERE id = ?',
+        [descricao, media, usuarioId, id]
+      );
+      await this.#substituirTags(executar, id, tagIds);
+      await this.#registrarHistorico(executar, {
+        id, acao: 'alterado', usuarioId, anterior, posterior: { ...anterior, descricao, media, tagIds }
+      });
+    });
+  }
+
+  async devolver(id, observacao, usuarioId, anterior) {
+    return this.#database.transacao(async (executar) => {
+      await executar(
+        `UPDATE acompanhamentos SET status = 'devolvido', observacao_revisao = ?, revisor_id = ?, revisado_em = NOW()
+         WHERE id = ?`,
+        [observacao, usuarioId, id]
+      );
+      await this.#registrarHistorico(executar, {
+        id, acao: 'devolvido', usuarioId, anterior, observacao,
+        posterior: { ...anterior, status: 'devolvido', observacaoRevisao: observacao }
+      });
+    });
+  }
+
+  async publicar(id, usuarioId, anterior) {
+    return this.#database.transacao(async (executar) => {
+      await executar(
+        `UPDATE acompanhamentos SET status = 'publicado', publicado_em = NOW(), revisor_id = ?, revisado_em = NOW()
+         WHERE id = ?`,
+        [usuarioId, id]
+      );
+      await this.#registrarHistorico(executar, {
+        id, acao: 'publicado', usuarioId, anterior, posterior: { ...anterior, status: 'publicado' }
+      });
+    });
+  }
+
+  // ===== Auxiliares =====
+
+  async #substituirTags(executar, id, tagIds) {
+    await executar('DELETE FROM acompanhamento_tag WHERE acompanhamento_id = ?', [id]);
+    if (tagIds.length > 0) {
+      const pares = tagIds.map((tagId) => [id, tagId]);
+      await executar('INSERT INTO acompanhamento_tag (acompanhamento_id, tag_id) VALUES ?', [pares]);
+    }
+  }
+
+  async #registrarHistorico(executar, { id, acao, usuarioId, anterior, posterior, observacao = null }) {
+    await executar(
+      `INSERT INTO historico_auditoria (entidade, entidade_id, acao, usuario_id, estado_anterior, estado_posterior, observacao)
+       VALUES ('acompanhamento', ?, ?, ?, ?, ?, ?)`,
+      [id, acao, usuarioId, anterior ? JSON.stringify(anterior) : null, JSON.stringify(posterior), observacao]
     );
-    return resultado.affectedRows > 0;
   }
 
   async #primeiroComTags(linhas) {
@@ -124,6 +251,23 @@ class AcompanhamentoRepository {
       publicadoEm: linha.publicado_em,
       atualizadoEm: linha.atualizado_em
     });
+  }
+
+  #linhaParaDetalhe(linha, tagsPorId) {
+    const turma = new Turma({
+      id: linha.turma_id,
+      anoSerie: linha.ano_serie,
+      identificacao: linha.identificacao,
+      anoLetivo: linha.ano_letivo
+    });
+    return {
+      acompanhamento: this.#linhaParaAcompanhamento(linha, tagsPorId.get(linha.id) ?? []).paraJSON(),
+      aluno: { id: linha.aluno_id, nome: linha.aluno_nome, matricula: linha.matricula },
+      turma: { id: turma.id, nome: turma.nome, anoLetivo: turma.anoLetivo },
+      disciplina: { id: linha.disciplina_id, nome: linha.disciplina_nome },
+      professor: { id: linha.professor_id, nome: linha.professor_nome },
+      bimestre: { id: linha.bimestre_id, numero: linha.bimestre_numero, nome: `${linha.bimestre_numero}º bimestre` }
+    };
   }
 }
 

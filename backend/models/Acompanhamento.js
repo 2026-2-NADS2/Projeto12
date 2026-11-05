@@ -19,6 +19,21 @@ class Acompanhamento {
     return STATUS_EDITAVEIS_PELO_PROFESSOR.includes(this.status);
   }
 
+    aguardandoRevisao() {
+    return this.status === 'enviado';
+  }
+
+  // "Foto" dos dados que importam para o histórico (estado anterior/posterior)
+  retrato() {
+    return {
+      descricao: this.descricao,
+      media: this.media,
+      status: this.status,
+      observacaoRevisao: this.observacaoRevisao,
+      tagIds: this.tags.map((t) => t.id)
+    };
+  }
+
   paraJSON() {
     return {
       id: this.id,
