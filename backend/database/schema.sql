@@ -108,3 +108,15 @@ CREATE TABLE IF NOT EXISTS turma_disciplina_professor (
   CONSTRAINT fk_tdp_disciplina FOREIGN KEY (disciplina_id) REFERENCES disciplinas(id),
   CONSTRAINT fk_tdp_professor FOREIGN KEY (professor_id) REFERENCES professores(id)
 );
+
+CREATE TABLE IF NOT EXISTS bimestres (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  ano_letivo SMALLINT NOT NULL,
+  numero TINYINT NOT NULL,
+  abertura DATETIME NOT NULL,
+  encerramento DATETIME NOT NULL,
+  atualizado_em DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  CONSTRAINT uq_bimestres_ano_numero UNIQUE (ano_letivo, numero),
+  CONSTRAINT chk_bimestres_numero CHECK (numero BETWEEN 1 AND 4),
+  CONSTRAINT chk_bimestres_periodo CHECK (encerramento > abertura)
+);

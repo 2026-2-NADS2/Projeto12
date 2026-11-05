@@ -24,6 +24,9 @@ const criarRotasTurmas = require('../routes/turmas');
 const TagRepository = require('../repositories/TagRepository');
 const criarRotasTags = require('../routes/tags');
 
+const BimestreRepository = require('../repositories/BimestreRepository');
+const criarRotasBimestres = require('../routes/bimestres');
+
 class SistemaEscolar {
   #app;
   #database;
@@ -72,6 +75,10 @@ class SistemaEscolar {
     }));
     const tagRepository = new TagRepository(this.#database);
     this.#app.use('/tags', criarRotasTags(tagRepository));
+
+        // Calendário
+    const bimestreRepository = new BimestreRepository(this.#database);
+    this.#app.use('/bimestres', criarRotasBimestres(bimestreRepository));
 
     // Rota de verificação: confirma que a API está no ar
     this.#app.get('/', (req, res) => {
