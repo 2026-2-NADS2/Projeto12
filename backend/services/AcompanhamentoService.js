@@ -7,18 +7,26 @@ class AcompanhamentoService {
   #turmaRepository;
   #bimestreRepository;
   #tagRepository;
+  #relatorioRepository;
 
-  constructor({ acompanhamentoRepository, professorRepository, turmaRepository, bimestreRepository, tagRepository }) {
+  constructor({ acompanhamentoRepository, professorRepository, turmaRepository, bimestreRepository, tagRepository, relatorioRepository }) {
     this.#acompanhamentoRepository = acompanhamentoRepository;
     this.#professorRepository = professorRepository;
     this.#turmaRepository = turmaRepository;
     this.#bimestreRepository = bimestreRepository;
     this.#tagRepository = tagRepository;
+    this.#relatorioRepository = relatorioRepository;
   }
 
   async listarMinhasTurmas(usuarioId) {
     const professor = await this.#professorLogado(usuarioId);
     return this.#turmaRepository.listarAlocacoesDoProfessor(professor.id);
+  }
+
+    // RF10: o professor consulta os retornos dos responsáveis das suas turmas
+  async listarRetornos(usuarioId, anoLetivo, bimestre) {
+    const professor = await this.#professorLogado(usuarioId);
+    return this.#relatorioRepository.listarRetornos({ anoLetivo, bimestre, professorId: professor.id });
   }
 
   async painel(usuarioId, turmaId, disciplinaId, numeroBimestre) {

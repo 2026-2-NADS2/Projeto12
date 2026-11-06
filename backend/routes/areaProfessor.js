@@ -26,6 +26,21 @@ function criarRotasAreaProfessor(acompanhamentoService) {
     }
   });
 
+    // Retornos dos responsáveis nas minhas turmas: ?anoLetivo=2026&bimestre=4 (bimestre opcional)
+  router.get('/retornos', async (req, res) => {
+    const { anoLetivo, bimestre } = req.query;
+    if (!/^\d{4}$/.test(anoLetivo ?? '') || (bimestre !== undefined && !/^[1-4]$/.test(bimestre))) {
+      return res.status(400).json({ erro: 'Informe ?anoLetivo=AAAA e, opcionalmente, &bimestre=1 a 4.' });
+    }
+    try {
+      res.json(await acompanhamentoService.listarRetornos(
+        req.usuarioLogado.id, Number(anoLetivo), bimestre ? Number(bimestre) : null
+      ));
+    } catch (e) {
+      responderErro(res, e, 'Erro ao listar os retornos.');
+    }
+  });
+
   const PAINEL = '/turmas/:turmaId/disciplinas/:disciplinaId/bimestres/:numero';
 
   // Painel de lançamento: alunos da turma com seus acompanhamentos

@@ -37,6 +37,10 @@ const AreaResponsavelService = require('../services/AreaResponsavelService');
 const GeradorPdf = require('../services/GeradorPdf');
 const criarRotasAreaResponsavel = require('../routes/areaResponsavel');
 
+const RelatorioRepository = require('../repositories/RelatorioRepository');
+const ExportadorPlanilha = require('../services/ExportadorPlanilha');
+const criarRotasRelatorios = require('../routes/relatorios');
+
 class SistemaEscolar {
   #app;
   #database;
@@ -90,6 +94,8 @@ class SistemaEscolar {
     const bimestreRepository = new BimestreRepository(this.#database);
     this.#app.use('/bimestres', criarRotasBimestres(bimestreRepository));
 
+        const relatorioRepository = new RelatorioRepository(this.#database);
+
         // Acompanhamento (RF05)
     const acompanhamentoRepository = new AcompanhamentoRepository(this.#database);
     const acompanhamentoService = new AcompanhamentoService({
@@ -97,7 +103,8 @@ class SistemaEscolar {
       professorRepository,
       turmaRepository,
       bimestreRepository,
-      tagRepository
+      tagRepository,
+      relatorioRepository
     });
     this.#app.use('/professor', criarRotasAreaProfessor(acompanhamentoService));
 
@@ -114,6 +121,9 @@ class SistemaEscolar {
       geradorPdf: new GeradorPdf()
     });
     this.#app.use('/responsavel', criarRotasAreaResponsavel(areaResponsavelService));
+
+        // Relatórios gerenciais e exportação (RF10, RF11)
+    this.#app.use('/relatorios', criarRotasRelatorios(relatorioRepository, new ExportadorPlanilha()));
 
     // Rota de verificação: confirma que a API está no ar
     this.#app.get('/', (req, res) => {
