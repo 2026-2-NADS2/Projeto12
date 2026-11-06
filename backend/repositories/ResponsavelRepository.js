@@ -49,9 +49,61 @@ class ResponsavelRepository {
     return linhas.map((linha) => this.#linhaParaResponsavel(linha));
   }
 
+  async buscarPorId(id) {
+    const sql = `
+      SELECT r.id, r.usuario_id, r.telefone, r.ativo, r.criado_em, u.nome, u.email
+      FROM responsaveis r
+      JOIN usuarios u ON u.id = r.usuario_id
+      WHERE r.id = ? AND r.ativo = 1
+    `;
+    const linhas = await this.#database.query(sql, [id]);
+    return linhas.length > 0 ? this.#linhaParaResponsavel(linhas[0]) : null;
+  }
+
+  // Inativa o responsável E a conta de login dele, num único comando
+  async buscarPorId(id) {
+    const sql = `
+      SELECT r.id, r.usuario_id, r.telefone, r.ativo, r.criado_em, u.nome, u.email
+      FROM responsaveis r
+      JOIN usuarios u ON u.id = r.usuario_id
+      WHERE r.id = ? AND r.ativo = 1
+    `;
+    const linhas = await this.#database.query(sql, [id]);
+    return linhas.length > 0 ? this.#linhaParaResponsavel(linhas[0]) : null;
+  }
+
+  // Inativa o responsável E a conta de login dele, num único comando
   async inativar(id) {
-    const sql = 'UPDATE responsaveis SET ativo = 0 WHERE id = ?';
-    await this.#database.query(sql, [id]);
+    const sql = `
+      UPDATE responsaveis r
+      JOIN usuarios u ON u.id = r.usuario_id
+      SET r.ativo = 0, u.ativo = 0
+      WHERE r.id = ? AND r.ativo = 1
+    `;
+    const resultado = await this.#database.query(sql, [id]);
+    return resultado.affectedRows > 0;
+  }
+
+  async atualizar(id, { nome, email, telefone }) {
+    const sql = `
+      UPDATE responsaveis r
+      JOIN usuarios u ON u.id = r.usuario_id
+      SET u.nome = ?, u.email = ?, r.telefone = ?
+      WHERE r.id = ? AND r.ativo = 1
+    `;
+    const resultado = await this.#database.query(sql, [nome, email, telefone, id]);
+    return resultado.affectedRows > 0;
+  }
+  
+  async atualizar(id, { nome, email, telefone }) {
+    const sql = `
+      UPDATE responsaveis r
+      JOIN usuarios u ON u.id = r.usuario_id
+      SET u.nome = ?, u.email = ?, r.telefone = ?
+      WHERE r.id = ? AND r.ativo = 1
+    `;
+    const resultado = await this.#database.query(sql, [nome, email, telefone, id]);
+    return resultado.affectedRows > 0;
   }
 
     async vincularAluno(responsavelId, alunoId, parentesco) {

@@ -16,7 +16,8 @@ class Database {
       database: process.env.DB_NAME,
       port: process.env.DB_PORT,
       waitForConnections: true, // se todas estiverem ocupadas, espera uma ficar livre
-      connectionLimit: 10       // no máximo 10 conexões abertas ao mesmo tempo
+      connectionLimit: 10,      // no máximo 10 conexões abertas ao mesmo tempo    // no máximo 10 conexões abertas ao mesmo tempo
+      dateStrings: ['DATE']     // colunas DATE voltam como texto "AAAA-MM-DD", sem hora nem fuso
     });
 
     // O pool só abre conexões quando precisa. Pedimos uma agora para testar

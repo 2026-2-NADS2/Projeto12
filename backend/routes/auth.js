@@ -24,6 +24,10 @@ function criarRotasAuth(usuarioRepository) {
         return res.status(401).json({ erro: 'E-mail ou senha inválidos.' });
       }
 
+      if (!usuario.ativo) {
+        return res.status(403).json({ erro: 'Esta conta está desativada. Procure a secretaria da escola.' });
+      }
+
       const token = jwt.sign(
         { id: usuario.id, perfil: usuario.perfil },
         process.env.JWT_SECRET,

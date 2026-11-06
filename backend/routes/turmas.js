@@ -78,6 +78,14 @@ function criarRotasTurmas({ turmaRepository, alunoRepository, disciplinaReposito
     }
 
     try {
+              // O ano letivo é copiado para turma_aluno: com alunos matriculados, não pode mudar
+      const atual = await turmaRepository.buscarPorId(req.params.id);
+      if (!atual) {
+        return res.status(404).json({ erro: 'Turma não encontrada.' });
+      }
+      if (atual.anoLetivo !== dados.anoLetivo && (await turmaRepository.contarAlunos(atual.id)) > 0) {
+        return res.status(409).json({ erro: 'Não é possível mudar o ano letivo de uma turma que já tem alunos matriculados.' });
+      }
       const atualizou = await turmaRepository.atualizar(req.params.id, dados);
       if (!atualizou) {
         return res.status(404).json({ erro: 'Turma não encontrada.' });

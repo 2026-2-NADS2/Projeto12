@@ -32,9 +32,9 @@ class AlunoRepository {
   }
 
   async atualizar(id, { nome, dataNascimento, matricula }) {
-    const sql = 'UPDATE alunos SET nome = ?, data_nascimento = ?, matricula = ? WHERE id = ?';
-    await this.#database.query(sql, [nome, dataNascimento, matricula, id]);
-    return this.buscarPorId(id);
+    const sql = 'UPDATE alunos SET nome = ?, data_nascimento = ?, matricula = ? WHERE id = ? AND ativo = 1';
+    const resultado = await this.#database.query(sql, [nome, dataNascimento, matricula, id]);
+    return resultado.affectedRows > 0 ? this.buscarPorId(id) : null;
   }
 
   async inativar(id) {

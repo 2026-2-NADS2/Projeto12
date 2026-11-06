@@ -33,4 +33,21 @@ function lerLancamento(body) {
   return { dados: { descricao, media, tagIds: [...new Set(tagIds)] } };
 }
 
-module.exports = { responderErro, lerLancamento };
+// Formato básico de e-mail: algo@algo.algo, sem espaços
+function emailValido(email) {
+  return typeof email === 'string' && email.length <= 150 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+// Telefone opcional: guarda só os dígitos e confere o tamanho (DDD + número)
+function normalizarTelefone(valor) {
+  if (valor === undefined || valor === null || valor === '') {
+    return { telefone: null };
+  }
+  const telefone = String(valor).replace(/\D/g, '');
+  if (telefone.length < 10 || telefone.length > 11) {
+    return { erro: 'Telefone inválido. Informe DDD + número (10 ou 11 dígitos).' };
+  }
+  return { telefone };
+}
+
+module.exports = { responderErro, lerLancamento, emailValido, normalizarTelefone };

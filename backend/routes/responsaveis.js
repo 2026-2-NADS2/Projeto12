@@ -1,6 +1,7 @@
 const express = require('express');
 const { verificarToken, somentePerfis } = require('../middlewares/autenticacao');
 const { validarId } = require('../middlewares/validacao');
+const { emailValido, normalizarTelefone } = require('./auxiliares');
 
 function criarRotasResponsaveis(responsavelRepository) {
   const router = express.Router();
@@ -8,7 +9,7 @@ function criarRotasResponsaveis(responsavelRepository) {
   router.use(verificarToken, somentePerfis('administrador'));
     router.param('id', validarId);
   router.param('alunoId', validarId);
-  
+
   router.post('/', async (req, res) => {
     const { nome, email, senha } = req.body;
     let { telefone } = req.body;
@@ -49,9 +50,68 @@ function criarRotasResponsaveis(responsavelRepository) {
     }
   });
 
+  router.put('/:id', async (req, res) => {
+    const nome = req.body.nome?.trim();
+    const email = req.body.email?.trim().toLowerCase();
+    const { erro: erroTelefone, telefone } = normalizarTelefone(req.body.telefone);
+
+    if (!nome || !emailValido(email)) {
+      return res.status(400).json({ erro: 'Informe nome e e-mail válido.' });
+    }
+    if (erroTelefone) {
+      return res.status(400).json({ erro: erroTelefone });
+    }
+
+    try {
+      const atualizou = await responsavelRepository.atualizar(req.params.id, { nome, email, telefone });
+      if (!atualizou) {
+        return res.status(404).json({ erro: 'Responsável não encontrado.' });
+      }
+      const responsavel = await responsavelRepository.buscarPorId(req.params.id);
+      res.json(responsavel.paraJSON());
+    } catch (erro) {
+      if (erro.code === 'ER_DUP_ENTRY') {
+        return res.status(409).json({ erro: 'Esse e-mail já está em uso.' });
+      }
+      console.error(erro);
+      res.status(500).json({ erro: 'Erro ao atualizar responsável.' });
+    }
+  });
+
+  router.put('/:id', async (req, res) => {
+    const nome = req.body.nome?.trim();
+    const email = req.body.email?.trim().toLowerCase();
+    const { erro: erroTelefone, telefone } = normalizarTelefone(req.body.telefone);
+
+    if (!nome || !emailValido(email)) {
+      return res.status(400).json({ erro: 'Informe nome e e-mail válido.' });
+    }
+    if (erroTelefone) {
+      return res.status(400).json({ erro: erroTelefone });
+    }
+
+    try {
+      const atualizou = await responsavelRepository.atualizar(req.params.id, { nome, email, telefone });
+      if (!atualizou) {
+        return res.status(404).json({ erro: 'Responsável não encontrado.' });
+      }
+      const responsavel = await responsavelRepository.buscarPorId(req.params.id);
+      res.json(responsavel.paraJSON());
+    } catch (erro) {
+      if (erro.code === 'ER_DUP_ENTRY') {
+        return res.status(409).json({ erro: 'Esse e-mail já está em uso.' });
+      }
+      console.error(erro);
+      res.status(500).json({ erro: 'Erro ao atualizar responsável.' });
+    }
+  });
+
   router.delete('/:id', async (req, res) => {
     try {
-      await responsavelRepository.inativar(req.params.id);
+      const inativou = await responsavelRepository.inativar(req.params.id);
+      if (!inativou) {
+        return res.status(404).json({ erro: 'Responsável não encontrado.' });
+      }
       res.status(204).send();
     } catch (erro) {
       console.error(erro);

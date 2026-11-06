@@ -45,9 +45,28 @@ class ProfessorRepository {
     return linhas.map((linha) => this.#linhaParaProfessor(linha));
   }
 
+    // Inativa o professor E a conta de login dele, num único comando
   async inativar(id) {
-    const sql = 'UPDATE professores SET ativo = 0 WHERE id = ?';
-    await this.#database.query(sql, [id]);
+    const sql = `
+      UPDATE professores p
+      JOIN usuarios u ON u.id = p.usuario_id
+      SET p.ativo = 0, u.ativo = 0
+      WHERE p.id = ? AND p.ativo = 1
+    `;
+    const resultado = await this.#database.query(sql, [id]);
+    return resultado.affectedRows > 0;
+  }
+
+  // Nome e e-mail ficam em "usuarios"; o registro funcional, em "professores"
+  async atualizar(id, { nome, email, registroFuncional }) {
+    const sql = `
+      UPDATE professores p
+      JOIN usuarios u ON u.id = p.usuario_id
+      SET u.nome = ?, u.email = ?, p.registro_funcional = ?
+      WHERE p.id = ? AND p.ativo = 1
+    `;
+    const resultado = await this.#database.query(sql, [nome, email, registroFuncional, id]);
+    return resultado.affectedRows > 0;
   }
 
     async buscarPorId(id) {

@@ -169,6 +169,11 @@ class TurmaRepository {
     return linhas.length > 0 ? this.#linhaParaTurma(linhas[0]) : null;
   }
 
+    async contarAlunos(turmaId) {
+    const linhas = await this.#database.query('SELECT COUNT(*) AS total FROM turma_aluno WHERE turma_id = ?', [turmaId]);
+    return linhas[0].total;
+  }
+
   #linhaParaTurma(linha) {
     return new Turma({
       id: linha.id,
