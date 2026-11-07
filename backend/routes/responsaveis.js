@@ -1,7 +1,7 @@
 const express = require('express');
 const { verificarToken, somentePerfis } = require('../middlewares/autenticacao');
 const { validarId } = require('../middlewares/validacao');
-const { emailValido, normalizarTelefone } = require('./auxiliares');
+const { emailValido, normalizarTelefone, lerPaginacao, montarPagina, lerBusca } = require('./auxiliares');
 
 function criarRotasResponsaveis(responsavelRepository) {
   const router = express.Router();
@@ -41,9 +41,13 @@ function criarRotasResponsaveis(responsavelRepository) {
   });
 
   router.get('/', async (req, res) => {
+    const { erro, paginacao } = lerPaginacao(req.query);
+    if (erro) {
+      return res.status(400).json({ erro });
+    }
     try {
-      const responsaveis = await responsavelRepository.listarTodos();
-      res.json(responsaveis.map((r) => r.paraJSON()));
+      const { itens, total } = await responsavelRepository.listarTodos({ busca: lerBusca(req.query), ...paginacao });
+      res.json(montarPagina(itens.map((r) => r.paraJSON()), total, paginacao));
     } catch (erro) {
       console.error(erro);
       res.status(500).json({ erro: 'Erro ao listar responsáveis.' });

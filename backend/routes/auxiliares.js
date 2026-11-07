@@ -50,4 +50,30 @@ function normalizarTelefone(valor) {
   return { telefone };
 }
 
-module.exports = { responderErro, lerLancamento, emailValido, normalizarTelefone };
+// Lê ?pagina= e ?porPagina= (padrão: página 1, 20 itens; máximo 100 por página)
+function lerPaginacao(query) {
+  const pagina = query.pagina === undefined ? 1 : Number(query.pagina);
+  const porPagina = query.porPagina === undefined ? 20 : Number(query.porPagina);
+
+  if (!Number.isInteger(pagina) || pagina < 1) {
+    return { erro: 'pagina deve ser um número inteiro a partir de 1.' };
+  }
+  if (!Number.isInteger(porPagina) || porPagina < 1 || porPagina > 100) {
+    return { erro: 'porPagina deve ser um número inteiro de 1 a 100.' };
+  }
+
+  return { paginacao: { pagina, porPagina, limite: porPagina, offset: (pagina - 1) * porPagina } };
+}
+
+// Monta a resposta padrão das listas paginadas
+function montarPagina(itens, total, { pagina, porPagina }) {
+  return { itens, pagina, porPagina, total, totalPaginas: Math.ceil(total / porPagina) };
+}
+
+// Termo de busca opcional (?busca=), sem espaços nas pontas e com tamanho limitado
+function lerBusca(query) {
+  const busca = typeof query.busca === 'string' ? query.busca.trim() : '';
+  return busca ? busca.slice(0, 100) : null;
+}
+
+module.exports = { responderErro, lerLancamento, emailValido, normalizarTelefone, lerPaginacao, montarPagina, lerBusca };

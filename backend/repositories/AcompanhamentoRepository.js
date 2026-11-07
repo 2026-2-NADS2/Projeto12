@@ -73,7 +73,8 @@ class AcompanhamentoRepository {
   }
 
   // Fila de revisão: status obrigatório, demais filtros opcionais
-  async listarParaRevisao({ status, anoLetivo, bimestre, turmaId, disciplinaId }) {
+  // Fila de revisão paginada: status obrigatório, demais filtros opcionais
+  async listarParaRevisao({ status, anoLetivo, bimestre, turmaId, disciplinaId, limite = 20, offset = 0 }) {
     const condicoes = ['ac.status = ?'];
     const valores = [status];
 
@@ -82,10 +83,17 @@ class AcompanhamentoRepository {
     if (turmaId) { condicoes.push('ac.turma_id = ?'); valores.push(turmaId); }
     if (disciplinaId) { condicoes.push('ac.disciplina_id = ?'); valores.push(disciplinaId); }
 
-    const sql = `${SELECT_DETALHE} WHERE ${condicoes.join(' AND ')} ORDER BY ac.enviado_em, a.nome`;
-    const linhas = await this.#database.query(sql, valores);
+    const consulta = `${SELECT_DETALHE} WHERE ${condicoes.join(' AND ')}`;
+
+    // Conta os resultados da consulta completa, usando-a como uma "tabela derivada"
+    const [{ total }] = await this.#database.query(`SELECT COUNT(*) AS total FROM (${consulta}) AS fila`, valores);
+
+    const linhas = await this.#database.query(
+      `${consulta} ORDER BY ac.enviado_em, a.nome, ac.id LIMIT ? OFFSET ?`,
+      [...valores, limite, offset]
+    );
     const tagsPorId = await this.#tagsPorAcompanhamento(linhas.map((l) => l.id));
-    return linhas.map((linha) => this.#linhaParaDetalhe(linha, tagsPorId));
+    return { itens: linhas.map((linha) => this.#linhaParaDetalhe(linha, tagsPorId)), total };
   }
 
   async listarHistorico(acompanhamentoId) {

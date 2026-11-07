@@ -1,8 +1,7 @@
 const express = require('express');
 const { verificarToken, somentePerfis } = require('../middlewares/autenticacao');
 const { validarId } = require('../middlewares/validacao');
-const { emailValido } = require('./auxiliares');
-
+const { emailValido, lerPaginacao, montarPagina, lerBusca } = require('./auxiliares');
 function criarRotasProfessores(professorRepository) {
   const router = express.Router();
 
@@ -29,15 +28,19 @@ function criarRotasProfessores(professorRepository) {
   });
 
   router.get('/', async (req, res) => {
+    const { erro, paginacao } = lerPaginacao(req.query);
+    if (erro) {
+      return res.status(400).json({ erro });
+    }
     try {
-      const professores = await professorRepository.listarTodos();
-      res.json(professores.map((p) => p.paraJSON()));
+      const { itens, total } = await professorRepository.listarTodos({ busca: lerBusca(req.query), ...paginacao });
+      res.json(montarPagina(itens.map((p) => p.paraJSON()), total, paginacao));
     } catch (erro) {
       console.error(erro);
       res.status(500).json({ erro: 'Erro ao listar professores.' });
     }
   });
-
+  
   router.put('/:id', async (req, res) => {
     const nome = req.body.nome?.trim();
     const email = req.body.email?.trim().toLowerCase();

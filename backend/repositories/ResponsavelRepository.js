@@ -1,4 +1,5 @@
 const Responsavel = require('../models/Responsavel');
+const { escaparLike } = require('../utils/sql');
 
 class ResponsavelRepository {
   #database;
@@ -37,16 +38,26 @@ class ResponsavelRepository {
     }
   }
 
-  async listarTodos() {
-    const sql = `
-      SELECT r.id, r.usuario_id, r.telefone, r.ativo, r.criado_em, u.nome, u.email
-      FROM responsaveis r
-      JOIN usuarios u ON u.id = r.usuario_id
-      WHERE r.ativo = 1
-      ORDER BY u.nome
-    `;
-    const linhas = await this.#database.query(sql);
-    return linhas.map((linha) => this.#linhaParaResponsavel(linha));
+  // Lista paginada, com busca opcional por nome, e-mail ou telefone
+  async listarTodos({ busca = null, limite = 20, offset = 0 } = {}) {
+    let where = 'WHERE r.ativo = 1';
+    const valores = [];
+
+    if (busca) {
+      const termo = `%${escaparLike(busca)}%`;
+      where += ' AND (u.nome LIKE ? OR u.email LIKE ? OR r.telefone LIKE ?)';
+      valores.push(termo, termo, termo);
+    }
+
+    const base = 'FROM responsaveis r JOIN usuarios u ON u.id = r.usuario_id';
+    const [{ total }] = await this.#database.query(`SELECT COUNT(*) AS total ${base} ${where}`, valores);
+    const linhas = await this.#database.query(
+      `SELECT r.id, r.usuario_id, r.telefone, r.ativo, r.criado_em, u.nome, u.email
+       ${base} ${where} ORDER BY u.nome LIMIT ? OFFSET ?`,
+      [...valores, limite, offset]
+    );
+
+    return { itens: linhas.map((linha) => this.#linhaParaResponsavel(linha)), total };
   }
 
   async buscarPorId(id) {
@@ -94,7 +105,7 @@ class ResponsavelRepository {
     const resultado = await this.#database.query(sql, [nome, email, telefone, id]);
     return resultado.affectedRows > 0;
   }
-  
+
   async atualizar(id, { nome, email, telefone }) {
     const sql = `
       UPDATE responsaveis r

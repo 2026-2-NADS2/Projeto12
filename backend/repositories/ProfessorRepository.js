@@ -1,4 +1,5 @@
 const Professor = require('../models/Professor');
+const { escaparLike } = require('../utils/sql');
 
 class ProfessorRepository {
   #database;
@@ -34,17 +35,27 @@ class ProfessorRepository {
     }
   }
 
-  async listarTodos() {
-    const sql = `
-      SELECT p.id, p.usuario_id, p.registro_funcional, p.ativo, p.criado_em, u.nome, u.email
-      FROM professores p
-      JOIN usuarios u ON u.id = p.usuario_id
-      WHERE p.ativo = 1
-    `;
-    const linhas = await this.#database.query(sql);
-    return linhas.map((linha) => this.#linhaParaProfessor(linha));
-  }
+   // Lista paginada, com busca opcional por nome, e-mail ou registro funcional
+  async listarTodos({ busca = null, limite = 20, offset = 0 } = {}) {
+    let where = 'WHERE p.ativo = 1';
+    const valores = [];
 
+    if (busca) {
+      const termo = `%${escaparLike(busca)}%`;
+      where += ' AND (u.nome LIKE ? OR u.email LIKE ? OR p.registro_funcional LIKE ?)';
+      valores.push(termo, termo, termo);
+    }
+
+    const base = 'FROM professores p JOIN usuarios u ON u.id = p.usuario_id';
+    const [{ total }] = await this.#database.query(`SELECT COUNT(*) AS total ${base} ${where}`, valores);
+    const linhas = await this.#database.query(
+      `SELECT p.id, p.usuario_id, p.registro_funcional, p.ativo, p.criado_em, u.nome, u.email
+       ${base} ${where} ORDER BY u.nome LIMIT ? OFFSET ?`,
+      [...valores, limite, offset]
+    );
+
+    return { itens: linhas.map((linha) => this.#linhaParaProfessor(linha)), total };
+  }
     // Inativa o professor E a conta de login dele, num único comando
   async inativar(id) {
     const sql = `

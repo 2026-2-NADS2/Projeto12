@@ -1,6 +1,7 @@
 const express = require('express');
 const { verificarToken, somentePerfis } = require('../middlewares/autenticacao');
 const { validarId } = require('../middlewares/validacao');
+const { lerPaginacao, montarPagina, lerBusca } = require('./auxiliares');
 
 function criarRotasAlunos(alunoRepository) {
   const router = express.Router();
@@ -28,9 +29,13 @@ function criarRotasAlunos(alunoRepository) {
   });
 
   router.get('/', async (req, res) => {
+    const { erro, paginacao } = lerPaginacao(req.query);
+    if (erro) {
+      return res.status(400).json({ erro });
+    }
     try {
-      const alunos = await alunoRepository.listarTodos();
-      res.json(alunos.map((aluno) => aluno.paraJSON()));
+      const { itens, total } = await alunoRepository.listarTodos({ busca: lerBusca(req.query), ...paginacao });
+      res.json(montarPagina(itens.map((aluno) => aluno.paraJSON()), total, paginacao));
     } catch (erro) {
       console.error(erro);
       res.status(500).json({ erro: 'Erro ao listar alunos.' });

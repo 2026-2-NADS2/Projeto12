@@ -1,7 +1,7 @@
 const express = require('express');
 const { verificarToken, somentePerfis } = require('../middlewares/autenticacao');
 const { validarId } = require('../middlewares/validacao');
-const { responderErro, lerLancamento } = require('./auxiliares');
+const { responderErro, lerLancamento, lerPaginacao, montarPagina } = require('./auxiliares');
 
 const STATUS_VALIDOS = ['rascunho', 'enviado', 'devolvido', 'publicado'];
 
@@ -39,16 +39,17 @@ function criarRotasRevisao(revisaoService) {
   // Fila de revisão (por padrão, os enviados)
   router.get('/acompanhamentos', async (req, res) => {
     const { erro, filtros } = lerFiltros(req.query);
-    if (erro) {
-      return res.status(400).json({ erro });
+    const { erro: erroPaginacao, paginacao } = lerPaginacao(req.query);
+    if (erro || erroPaginacao) {
+      return res.status(400).json({ erro: erro ?? erroPaginacao });
     }
     try {
-      res.json(await revisaoService.listarFila(filtros));
+      const { itens, total } = await revisaoService.listarFila({ ...filtros, ...paginacao });
+      res.json(montarPagina(itens, total, paginacao));
     } catch (e) {
       responderErro(res, e, 'Erro ao carregar a fila de revisão.');
     }
   });
-
   // Detalhe com histórico
   router.get('/acompanhamentos/:id', async (req, res) => {
     try {
