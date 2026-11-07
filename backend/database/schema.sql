@@ -186,3 +186,14 @@ CREATE TABLE IF NOT EXISTS ciencias (
   CONSTRAINT fk_ciencia_aluno FOREIGN KEY (aluno_id) REFERENCES alunos(id),
   CONSTRAINT fk_ciencia_bimestre FOREIGN KEY (bimestre_id) REFERENCES bimestres(id)
 );
+
+CREATE TABLE IF NOT EXISTS recuperacoes_senha (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  usuario_id INT NOT NULL,
+  token_hash CHAR(64) NOT NULL UNIQUE,
+  expira_em DATETIME NOT NULL,
+  usado_em DATETIME NULL,
+  criado_em DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  INDEX idx_rec_usuario (usuario_id),
+  CONSTRAINT fk_rec_usuario FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
+);

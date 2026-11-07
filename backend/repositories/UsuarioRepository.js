@@ -39,6 +39,15 @@ class UsuarioRepository {
     return linhas.map((linha) => this.#linhaParaUsuario(linha));
   }
 
+    async buscarPorId(id) {
+    const linhas = await this.#database.query('SELECT * FROM usuarios WHERE id = ?', [id]);
+    return linhas.length > 0 ? this.#linhaParaUsuario(linhas[0]) : null;
+  }
+
+  async atualizarSenha(id, senhaHash) {
+    await this.#database.query('UPDATE usuarios SET senha_hash = ? WHERE id = ?', [senhaHash, id]);
+  }
+
   // método privado — só existe pra uso interno desta classe
   #linhaParaUsuario(linha) {
     return new Usuario({

@@ -41,6 +41,10 @@ const RelatorioRepository = require('../repositories/RelatorioRepository');
 const ExportadorPlanilha = require('../services/ExportadorPlanilha');
 const criarRotasRelatorios = require('../routes/relatorios');
 
+const SenhaService = require('../services/SenhaService');
+const RecuperacaoSenhaRepository = require('../repositories/RecuperacaoSenhaRepository');
+const NotificadorEmail = require('../services/NotificadorEmail');
+
 class SistemaEscolar {
   #app;
   #database;
@@ -57,12 +61,17 @@ class SistemaEscolar {
     this.#app.use(express.json());
   }
 
-    #configurarRotas() {
+  #configurarRotas() {
     // Usuários e autenticação
     const usuarioRepository = new UsuarioRepository(this.#database);
-    this.#app.use('/auth', criarRotasAuth(usuarioRepository));
+    const senhaService = new SenhaService({
+      usuarioRepository,
+      recuperacaoRepository: new RecuperacaoSenhaRepository(this.#database),
+      notificador: new NotificadorEmail(),
+      urlFrontend: process.env.FRONTEND_URL ?? 'http://localhost:5173'
+    });
+    this.#app.use('/auth', criarRotasAuth({ usuarioRepository, senhaService }));
     this.#app.use('/usuarios', criarRotasUsuarios(usuarioRepository));
-
     // Pessoas
     const alunoRepository = new AlunoRepository(this.#database);
     this.#app.use('/alunos', criarRotasAlunos(alunoRepository));
