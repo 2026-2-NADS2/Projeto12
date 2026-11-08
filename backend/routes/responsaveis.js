@@ -2,6 +2,7 @@ const express = require('express');
 const { verificarToken, somentePerfis } = require('../middlewares/autenticacao');
 const { validarId } = require('../middlewares/validacao');
 const { emailValido, normalizarTelefone, lerPaginacao, montarPagina, lerBusca } = require('./auxiliares');
+const SenhaService = require('../services/SenhaService');
 
 function criarRotasResponsaveis(responsavelRepository) {
   const router = express.Router();
@@ -16,6 +17,16 @@ function criarRotasResponsaveis(responsavelRepository) {
 
     if (!nome || !email || !senha) {
       return res.status(400).json({ erro: 'Nome, e-mail e senha são obrigatórios.' });
+    }
+
+    
+    // Mesmas regras usadas na troca de senha: e-mail válido e senha de 8 a 72 caracteres, com letra e número
+    if (!emailValido(email)) {
+      return res.status(400).json({ erro: 'Informe um e-mail válido.' });
+    }
+    const erroSenha = SenhaService.validarForca(senha);
+    if (erroSenha) {
+      return res.status(400).json({ erro: erroSenha });
     }
 
     // Telefone é opcional. Se vier, guardamos só os dígitos e conferimos o tamanho.

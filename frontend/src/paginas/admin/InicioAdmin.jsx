@@ -33,7 +33,7 @@ async function carregarPainel() {
 
 const ATALHOS = [
   { rota: '/admin/revisao', titulo: 'Revisão', texto: 'Revisar, devolver ou publicar acompanhamentos', icone: ClipboardCheck },
-  { rota: '/admin/cadastros', titulo: 'Turmas', texto: 'Alunos, disciplinas e professores de cada turma', icone: LayoutGrid },
+  { rota: '/admin/cadastros?aba=turmas', titulo: 'Turmas', texto: 'Alunos, disciplinas e professores de cada turma', icone: LayoutGrid },
   { rota: '/admin/bimestres', titulo: 'Bimestres', texto: 'Período de digitação dos quatro bimestres', icone: CalendarRange }
 ];
 

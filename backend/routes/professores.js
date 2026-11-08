@@ -2,6 +2,7 @@ const express = require('express');
 const { verificarToken, somentePerfis } = require('../middlewares/autenticacao');
 const { validarId } = require('../middlewares/validacao');
 const { emailValido, lerPaginacao, montarPagina, lerBusca } = require('./auxiliares');
+const SenhaService = require('../services/SenhaService');
 function criarRotasProfessores(professorRepository) {
   const router = express.Router();
 
@@ -9,14 +10,28 @@ function criarRotasProfessores(professorRepository) {
   router.param('id', validarId);
 
   router.post('/', async (req, res) => {
+
     const { nome, email, senha, registroFuncional } = req.body;
 
     if (!nome || !email || !senha || !registroFuncional) {
       return res.status(400).json({ erro: 'Nome, e-mail, senha e registro funcional são obrigatórios.' });
     }
+    if (!nome || !email || !senha || !registroFuncional) {
+      return res.status(400).json({ erro: 'Nome, e-mail, senha e registro funcional são obrigatórios.' });
+    }
+
+    // Mesmas regras usadas na troca de senha: e-mail válido e senha de 8 a 72 caracteres, com letra e número
+    if (!emailValido(email)) {
+      return res.status(400).json({ erro: 'Informe um e-mail válido.' });
+    }
+    const erroSenha = SenhaService.validarForca(senha);
+    if (erroSenha) {
+      return res.status(400).json({ erro: erroSenha });
+    }
 
     try {
       const professor = await professorRepository.criar({ nome, email, senha, registroFuncional });
+    
       res.status(201).json(professor.paraJSON());
     } catch (erro) {
       if (erro.code === 'ER_DUP_ENTRY') {

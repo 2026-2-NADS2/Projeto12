@@ -9,6 +9,8 @@ import InicioAdmin from './paginas/admin/InicioAdmin';
 import FilaRevisao from './paginas/admin/FilaRevisao';
 import RevisarAcompanhamento from './paginas/admin/RevisarAcompanhamento';
 import RelatoriosAdmin from './paginas/admin/RelatoriosAdmin';
+import Cadastros from './paginas/admin/Cadastros';
+import BimestresAdmin from './paginas/admin/BimestresAdmin';
 import InicioProfessor from './paginas/professor/InicioProfessor';
 import MinhasTurmas from './paginas/professor/MinhasTurmas';
 import Lancamentos from './paginas/professor/Lancamentos';
@@ -29,9 +31,10 @@ export default function App() {
       <Route element={<RotaProtegida perfil="administrador" />}>
         <Route path="/admin" element={<Layout />}>
           <Route index element={<InicioAdmin />} />
-          <Route path="cadastros" element={<EmConstrucao titulo="Cadastros" />} />
-          <Route path="bimestres" element={<EmConstrucao titulo="Bimestres" />} />
-          <Route path="revisao" element={<FilaRevisao />} />
+          <Route path="cadastros" element={<Cadastros />} />
+          <Route path="turmas/:id" element={<EmConstrucao titulo="Detalhe da turma" />} />
+          <Route path="responsaveis/:id" element={<EmConstrucao titulo="Alunos vinculados" />} />
+          <Route path="bimestres" element={<BimestresAdmin />} />          <Route path="revisao" element={<FilaRevisao />} />
           <Route path="revisao/:id" element={<RevisarAcompanhamento />} />         
           <Route path="relatorios" element={<RelatoriosAdmin />} />
         </Route>

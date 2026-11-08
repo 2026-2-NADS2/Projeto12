@@ -445,3 +445,37 @@ fieldset.campo legend { margin-bottom: 6px; }
   .exportar { align-items: stretch; width: 100%; }
   .coluna-barra { width: auto; }
 }
+
+/* ==========================================================
+   Bloco 40 – cadastros e bimestres do administrador
+   ========================================================== */
+.barra-cadastro { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+.campo-busca {
+  display: flex; align-items: center; gap: 8px; min-width: 260px; padding: 0 12px; min-height: 42px;
+  background: var(--superficie-3); border: 1px solid var(--borda-forte); border-radius: var(--raio-pequeno);
+  color: var(--texto-suave);
+}
+.campo-busca:focus-within { border-color: var(--ciano); }
+.campo-busca input { flex: 1; background: none; border: none; outline: none; font: inherit; color: var(--texto); }
+.barra-cadastro + .mensagem-sucesso { margin-bottom: 16px; }
+
+.tabela .celula-acao { text-align: right; }
+.acoes-linha { display: inline-flex; align-items: center; gap: 6px; }
+.botao-icone {
+  width: 36px; height: 36px; display: inline-grid; place-items: center; border-radius: var(--raio-pequeno);
+  background: none; border: 1px solid transparent; color: var(--texto-suave); cursor: pointer;
+}
+.botao-icone:hover { color: var(--ciano-claro); border-color: var(--borda-forte); }
+.botao-icone-perigo:hover { color: var(--perigo); }
+.dica { font-weight: 400; font-size: 0.8rem; color: var(--texto-apagado); }
+.modal .formulario { margin-top: 12px; }
+.modal { max-height: calc(100vh - 32px); overflow-y: auto; }
+
+/* Bimestres */
+.periodo { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.periodo div { display: flex; flex-direction: column; gap: 2px; }
+
+@media (max-width: 768px) {
+  .campo-busca { min-width: 0; width: 100%; }
+  .barra-cadastro .botao { width: 100%; }
+}
