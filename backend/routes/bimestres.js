@@ -17,8 +17,10 @@ function criarRotasBimestres(bimestreRepository) {
   router.use(verificarToken);
 
   // ...mas consultar é permitido a administrador e professor
-  router.get('/', somentePerfis('administrador', 'professor'), async (req, res) => {
-    const { anoLetivo } = req.query;
+  // ...mas consultar é permitido a administrador, professor e responsável (as datas aparecem para todos)
+  // ...mas consultar é permitido a administrador, professor e responsável (as datas aparecem para todos)
+  router.get('/', somentePerfis('administrador', 'professor', 'responsavel'), async (req, res) => {
+        const { anoLetivo } = req.query;
 
     if (!/^\d{4}$/.test(anoLetivo ?? '')) {
       return res.status(400).json({ erro: 'Informe o ano letivo com 4 dígitos (ex.: ?anoLetivo=2026).' });

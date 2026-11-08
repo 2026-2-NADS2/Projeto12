@@ -12,6 +12,9 @@ import InicioProfessor from './paginas/professor/InicioProfessor';
 import MinhasTurmas from './paginas/professor/MinhasTurmas';
 import Lancamentos from './paginas/professor/Lancamentos';
 import FormularioLancamento from './paginas/professor/FormularioLancamento';
+import InicioResponsavel from './paginas/responsavel/InicioResponsavel';
+import RelatorioAluno from './paginas/responsavel/RelatorioAluno';
+
 
 export default function App() {
   return (
@@ -46,8 +49,8 @@ export default function App() {
       {/* Módulo do responsável */}
       <Route element={<RotaProtegida perfil="responsavel" />}>
         <Route path="/responsavel" element={<Layout />}>
-          <Route index element={<EmConstrucao titulo="Meus alunos" />} />
-        </Route>
+          <Route index element={<InicioResponsavel />} />
+          <Route path="alunos/:alunoId" element={<RelatorioAluno />} />        </Route>
       </Route>
 
       {/* Qualquer outro endereço vai para o login (que redireciona quem já está logado) */}
