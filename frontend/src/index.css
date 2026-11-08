@@ -479,3 +479,16 @@ fieldset.campo legend { margin-bottom: 6px; }
   .campo-busca { min-width: 0; width: 100%; }
   .barra-cadastro .botao { width: 100%; }
 }
+
+
+/* ==========================================================
+   Bloco 41 – vínculos da turma e do responsável
+   ========================================================== */
+.barra-vinculo { display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap; margin-bottom: 8px; }
+.barra-vinculo .campo { flex: 1; min-width: 200px; }
+.barra-vinculo + .dica { display: block; margin-bottom: 16px; }
+.dica + .mensagem-erro, .dica + .mensagem-sucesso, .barra-vinculo + .mensagem-erro, .barra-vinculo + .mensagem-sucesso { margin-bottom: 16px; }
+.select-tabela {
+  font: inherit; color: var(--texto); background: var(--superficie-3); border: 1px solid var(--borda-forte);
+  border-radius: var(--raio-pequeno); padding: 6px 10px; max-width: 100%;
+}
