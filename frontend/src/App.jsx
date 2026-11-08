@@ -1,21 +1,47 @@
-import { useState, useEffect } from 'react';
+import { Navigate, Route, Routes } from 'react-router-dom';
+import RotaProtegida from './componentes/RotaProtegida';
+import Layout from './componentes/Layout';
+import Login from './paginas/Login';
+import EsqueciSenha from './paginas/EsqueciSenha';
+import RedefinirSenha from './paginas/RedefinirSenha';
+import EmConstrucao from './paginas/EmConstrucao';
 
-function App() {
-  const [mensagem, setMensagem] = useState('Carregando...');
-
-  useEffect(() => {
-    fetch('http://localhost:3001/')
-      .then((resposta) => resposta.text())
-      .then((texto) => setMensagem(texto))
-      .catch((erro) => setMensagem('Erro ao conectar com o backend: ' + erro.message));
-  }, []);
-
+export default function App() {
   return (
-    <div>
-      <h1>Sistema de Comunicação Escolar</h1>
-      <p>Resposta do backend: {mensagem}</p>
-    </div>
+    <Routes>
+      {/* Telas abertas (sem login) */}
+      <Route path="/login" element={<Login />} />
+      <Route path="/esqueci-senha" element={<EsqueciSenha />} />
+      <Route path="/redefinir-senha" element={<RedefinirSenha />} />
+
+      {/* Módulo do administrador */}
+      <Route element={<RotaProtegida perfil="administrador" />}>
+        <Route path="/admin" element={<Layout />}>
+          <Route index element={<EmConstrucao titulo="Início" />} />
+          <Route path="cadastros" element={<EmConstrucao titulo="Cadastros" />} />
+          <Route path="bimestres" element={<EmConstrucao titulo="Bimestres" />} />
+          <Route path="revisao" element={<EmConstrucao titulo="Fila de revisão" />} />
+          <Route path="relatorios" element={<EmConstrucao titulo="Relatórios" />} />
+        </Route>
+      </Route>
+
+      {/* Módulo do professor */}
+      <Route element={<RotaProtegida perfil="professor" />}>
+        <Route path="/professor" element={<Layout />}>
+          <Route index element={<EmConstrucao titulo="Início" />} />
+          <Route path="turmas" element={<EmConstrucao titulo="Minhas turmas" />} />
+        </Route>
+      </Route>
+
+      {/* Módulo do responsável */}
+      <Route element={<RotaProtegida perfil="responsavel" />}>
+        <Route path="/responsavel" element={<Layout />}>
+          <Route index element={<EmConstrucao titulo="Meus alunos" />} />
+        </Route>
+      </Route>
+
+      {/* Qualquer outro endereço vai para o login (que redireciona quem já está logado) */}
+      <Route path="*" element={<Navigate to="/login" replace />} />
+    </Routes>
   );
 }
-
-export default App;
