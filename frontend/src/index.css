@@ -258,3 +258,89 @@ a.item-lista:hover { border-color: var(--ciano); text-decoration: none; }
   .grade-2, .grade-3, .grade-4, .lista-cartoes.grade-2 { grid-template-columns: 1fr; }
   .numero-grande { font-size: 1.7rem; }
 }
+
+
+/* ==========================================================
+   Bloco 36 – turmas, lançamentos e formulário do professor
+   ========================================================== */
+.link-voltar { display: inline-flex; align-items: center; gap: 6px; font-size: 0.9rem; margin-bottom: 12px; }
+
+/* Faixa de aviso (ex.: bimestre aberto) */
+.aviso {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 20px; padding: 12px 16px;
+  border: 1px solid rgba(14, 165, 233, 0.35); border-radius: var(--raio);
+  background: rgba(14, 165, 233, 0.08); color: var(--texto);
+}
+.aviso svg { color: var(--ciano-claro); flex-shrink: 0; }
+.aviso-neutro { border-color: var(--borda-forte); background: var(--superficie-2); color: var(--texto-suave); }
+.aviso-neutro svg { color: var(--texto-suave); }
+
+/* Cartão de turma (Minhas turmas) */
+.cartao-turma { display: flex; flex-direction: column; gap: 8px; color: var(--texto); }
+.cartao-turma:hover { border-color: var(--ciano); text-decoration: none; }
+.cartao-turma strong { font-size: 1.1rem; margin-top: 8px; }
+.link-acao { display: inline-flex; align-items: center; gap: 6px; color: var(--ciano-claro); font-weight: 600; margin-top: 8px; }
+
+/* Abas dos bimestres */
+.abas { display: flex; gap: 4px; margin-bottom: 16px; border-bottom: 1px solid var(--borda-forte); overflow-x: auto; }
+.aba {
+  background: none; border: none; border-bottom: 2px solid transparent; padding: 10px 16px;
+  font: inherit; color: var(--texto-suave); cursor: pointer; white-space: nowrap;
+}
+.aba:hover { color: var(--texto); }
+.aba-ativa { color: var(--ciano-claro); border-bottom-color: var(--ciano); font-weight: 600; }
+
+/* Filtros por situação */
+.filtros { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+.filtro {
+  display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; font: inherit; font-size: 0.9rem;
+  background: var(--superficie-2); color: var(--texto); border: 1px solid var(--borda-forte);
+  border-radius: 999px; cursor: pointer;
+}
+.filtro-ativo { border-color: var(--ciano); background: rgba(14, 165, 233, 0.1); }
+
+/* Tabela */
+.tabela-cartao { padding: 0; overflow-x: auto; transition: opacity 0.2s; }
+.tabela-cartao.atualizando { opacity: 0.6; }
+.tabela { width: 100%; border-collapse: collapse; }
+.tabela th {
+  text-align: left; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em;
+  color: var(--texto-suave); padding: 12px 16px; border-bottom: 1px solid var(--borda-forte);
+}
+.tabela td { padding: 12px 16px; border-bottom: 1px solid var(--borda); vertical-align: middle; }
+.tabela tbody tr:last-child td { border-bottom: none; }
+.tabela tbody tr:hover { background: rgba(255, 255, 255, 0.02); }
+.celula-acao { text-align: right; }
+.botao-pequeno { min-height: 34px; padding: 0 14px; font-size: 0.9rem; }
+
+/* Formulário de lançamento */
+.formulario-lancamento { max-width: 820px; }
+.campo textarea { resize: vertical; line-height: 1.5; }
+.campo input:disabled, .campo textarea:disabled { opacity: 0.75; cursor: not-allowed; }
+.contador { align-self: flex-end; font-weight: 400; font-size: 0.8rem; color: var(--texto-apagado); }
+.campo-media { max-width: 180px; }
+fieldset.campo { border: none; }
+fieldset.campo legend { margin-bottom: 6px; }
+.seletor-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+.tag {
+  padding: 6px 14px; border-radius: 999px; font: inherit; font-size: 0.9rem; cursor: pointer;
+  background: var(--superficie-3); color: var(--texto-suave); border: 1px solid var(--borda-forte);
+}
+.tag:hover:not(:disabled) { color: var(--texto); border-color: var(--ciano); }
+.tag-marcada { background: rgba(14, 165, 233, 0.15); color: var(--ciano-claro); border-color: var(--ciano); }
+.tag:disabled { cursor: not-allowed; }
+.caixa-alerta {
+  display: flex; gap: 12px; margin-top: 16px; padding: 14px 16px; border-radius: var(--raio-pequeno);
+  background: rgba(248, 113, 113, 0.1); border: 1px solid rgba(248, 113, 113, 0.4); color: var(--texto);
+}
+.caixa-alerta svg { color: var(--perigo); flex-shrink: 0; }
+.caixa-alerta p { color: var(--texto-suave); margin-top: 4px; }
+.formulario-lancamento .aviso { margin: 16px 0 0; }
+.mensagem-sucesso { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.navegacao-alunos { display: flex; justify-content: space-between; gap: 12px; max-width: 820px; margin-top: 16px; }
+.navegacao-alunos a { display: inline-flex; align-items: center; gap: 6px; }
+
+@media (max-width: 768px) {
+  .so-tela-grande { display: none; }
+  .tabela th, .tabela td { padding: 10px 12px; }
+}

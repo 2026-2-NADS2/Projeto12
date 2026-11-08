@@ -21,7 +21,11 @@ function lerTag(body) {
 function criarRotasTags(tagRepository) {
   const router = express.Router();
 
-  router.use(verificarToken, somentePerfis('administrador'));
+  // O professor pode CONSULTAR as tags (para escolher no lançamento); só o administrador cria, edita e inativa
+  router.use(verificarToken, (req, res, next) => {
+    const perfis = req.method === 'GET' ? ['administrador', 'professor'] : ['administrador'];
+    somentePerfis(...perfis)(req, res, next);
+  });
   router.param('id', validarId);
 
   router.post('/', async (req, res) => {

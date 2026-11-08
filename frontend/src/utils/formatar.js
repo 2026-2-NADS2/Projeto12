@@ -57,3 +57,11 @@ export function primeiroNome(nome = '') {
 }
 
 export const NOME_DO_TURNO = { manha: 'manhã', tarde: 'tarde', integral: 'integral' };
+
+
+// "18/12/2026 às 23:59"
+export function formatarDataHoraAno(iso) {
+  if (!iso) return '—';
+  const data = new Date(iso);
+  return `${formatoDataAno.format(data)} às ${formatoHora.format(data)}`;
+}

@@ -19,7 +19,9 @@ export function useCarregar(carregar, chave = '') {
   }, [pedido]);
 
   const recarregar = useCallback(() => setVersao((v) => v + 1), []);
-  const carregando = resultado.pedido !== pedido;
+  const atualizando = resultado.pedido !== pedido;
+  // Só mostra "Carregando…" na primeira busca; ao recarregar, os dados antigos ficam na tela até chegar a resposta
+  const carregando = atualizando && resultado.dados === null;
 
-  return { dados: resultado.dados, carregando, erro: carregando ? '' : resultado.erro, recarregar };
+  return { dados: resultado.dados, carregando, atualizando, erro: atualizando ? '' : resultado.erro, recarregar };
 }

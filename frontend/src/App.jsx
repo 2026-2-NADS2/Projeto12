@@ -7,6 +7,9 @@ import RedefinirSenha from './paginas/RedefinirSenha';
 import EmConstrucao from './paginas/EmConstrucao';
 import InicioAdmin from './paginas/admin/InicioAdmin';
 import InicioProfessor from './paginas/professor/InicioProfessor';
+import MinhasTurmas from './paginas/professor/MinhasTurmas';
+import Lancamentos from './paginas/professor/Lancamentos';
+import FormularioLancamento from './paginas/professor/FormularioLancamento';
 
 export default function App() {
   return (
@@ -31,8 +34,10 @@ export default function App() {
       <Route element={<RotaProtegida perfil="professor" />}>
         <Route path="/professor" element={<Layout />}>
           <Route index element={<InicioProfessor />} />
-          <Route path="turmas" element={<EmConstrucao titulo="Minhas turmas" />} />
-          <Route path="turmas/:turmaId/disciplinas/:disciplinaId" element={<EmConstrucao titulo="Lançamentos" />} />
+          <Route path="turmas" element={<MinhasTurmas />} />
+          <Route path="turmas/:turmaId/disciplinas/:disciplinaId" element={<Lancamentos />} />
+          <Route path="turmas/:turmaId/disciplinas/:disciplinaId/bimestres/:numero/alunos/:alunoId"
+            element={<FormularioLancamento />} />
         </Route>
       </Route>
 
