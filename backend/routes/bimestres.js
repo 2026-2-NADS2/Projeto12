@@ -16,9 +16,6 @@ function criarRotasBimestres(bimestreRepository) {
   // Todos precisam estar logados...
   router.use(verificarToken);
 
-  // ...mas consultar é permitido a administrador e professor
-  // ...mas consultar é permitido a administrador, professor e responsável (as datas aparecem para todos)
-  // ...mas consultar é permitido a administrador, professor e responsável (as datas aparecem para todos)
   router.get('/', somentePerfis('administrador', 'professor', 'responsavel'), async (req, res) => {
         const { anoLetivo } = req.query;
 

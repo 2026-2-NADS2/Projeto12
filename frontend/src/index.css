@@ -410,3 +410,38 @@ fieldset.campo legend { margin-bottom: 6px; }
 .ciencia { display: flex; flex-direction: column; gap: 12px; max-width: 820px; }
 .ciencia .secao-titulo { margin: 0; color: var(--texto); }
 .ciencia-registrada { flex-direction: row; align-items: flex-start; border-color: rgba(52, 211, 153, 0.4); }
+
+
+/* ==========================================================
+   Bloco 39 – relatórios do administrador
+   ========================================================== */
+.cabecalho-pagina { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.exportar { display: flex; flex-direction: column; gap: 8px; align-items: flex-end; }
+
+.cartao-status { display: flex; flex-direction: column; gap: 6px; align-items: flex-start; }
+.cartao-status strong { font-size: 1.8rem; line-height: 1.1; }
+
+.quadro { display: flex; flex-direction: column; gap: 14px; margin-bottom: 20px; }
+.quadro-titulo { display: flex; align-items: center; gap: 8px; font-size: 1.1rem; }
+.quadro .cartao-topo { flex-wrap: wrap; }
+.quadro .filtros { margin-bottom: 0; }
+.tabela-rolagem { overflow-x: auto; }
+
+/* Barras horizontais das médias e das tags */
+.coluna-barra { width: 45%; }
+.coluna-barra .barra-media { display: inline-block; width: calc(100% - 52px); vertical-align: middle; }
+.valor-media { display: inline-block; width: 44px; text-align: right; font-weight: 600; }
+.barra-media { display: block; height: 10px; border-radius: 999px; background: var(--fundo); overflow: hidden; }
+.barra-media-valor { display: block; height: 100%; border-radius: 999px; background: var(--ciano); }
+.barra-baixa { background: var(--alerta); }
+
+.lista-barras { list-style: none; display: flex; flex-direction: column; gap: 14px; }
+.lista-barras li { display: flex; flex-direction: column; gap: 6px; }
+.lista-retornos { list-style: none; display: flex; flex-direction: column; gap: 14px; }
+.lista-retornos li { display: flex; flex-direction: column; gap: 2px; padding-bottom: 12px; border-bottom: 1px solid var(--borda); }
+.lista-retornos li:last-child { border-bottom: none; padding-bottom: 0; }
+
+@media (max-width: 768px) {
+  .exportar { align-items: stretch; width: 100%; }
+  .coluna-barra { width: auto; }
+}
