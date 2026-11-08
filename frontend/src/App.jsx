@@ -6,6 +6,8 @@ import EsqueciSenha from './paginas/EsqueciSenha';
 import RedefinirSenha from './paginas/RedefinirSenha';
 import EmConstrucao from './paginas/EmConstrucao';
 import InicioAdmin from './paginas/admin/InicioAdmin';
+import FilaRevisao from './paginas/admin/FilaRevisao';
+import RevisarAcompanhamento from './paginas/admin/RevisarAcompanhamento';
 import InicioProfessor from './paginas/professor/InicioProfessor';
 import MinhasTurmas from './paginas/professor/MinhasTurmas';
 import Lancamentos from './paginas/professor/Lancamentos';
@@ -25,8 +27,8 @@ export default function App() {
           <Route index element={<InicioAdmin />} />
           <Route path="cadastros" element={<EmConstrucao titulo="Cadastros" />} />
           <Route path="bimestres" element={<EmConstrucao titulo="Bimestres" />} />
-          <Route path="revisao" element={<EmConstrucao titulo="Fila de revisão" />} />
-          <Route path="relatorios" element={<EmConstrucao titulo="Relatórios" />} />
+          <Route path="revisao" element={<FilaRevisao />} />
+          <Route path="revisao/:id" element={<RevisarAcompanhamento />} />          <Route path="relatorios" element={<EmConstrucao titulo="Relatórios" />} />
         </Route>
       </Route>
 
