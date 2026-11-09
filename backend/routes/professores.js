@@ -81,31 +81,6 @@ function criarRotasProfessores(professorRepository) {
     }
   });
 
-  router.put('/:id', async (req, res) => {
-    const nome = req.body.nome?.trim();
-    const email = req.body.email?.trim().toLowerCase();
-    const registroFuncional = req.body.registroFuncional?.trim();
-
-    if (!nome || !registroFuncional || !emailValido(email)) {
-      return res.status(400).json({ erro: 'Informe nome, e-mail válido e registro funcional.' });
-    }
-
-    try {
-      const atualizou = await professorRepository.atualizar(req.params.id, { nome, email, registroFuncional });
-      if (!atualizou) {
-        return res.status(404).json({ erro: 'Professor não encontrado.' });
-      }
-      const professor = await professorRepository.buscarPorId(req.params.id);
-      res.json(professor.paraJSON());
-    } catch (erro) {
-      if (erro.code === 'ER_DUP_ENTRY') {
-        return res.status(409).json({ erro: 'Esse e-mail ou registro funcional já está em uso.' });
-      }
-      console.error(erro);
-      res.status(500).json({ erro: 'Erro ao atualizar professor.' });
-    }
-  });
-
   router.delete('/:id', async (req, res) => {
     try {
       const inativou = await professorRepository.inativar(req.params.id);
