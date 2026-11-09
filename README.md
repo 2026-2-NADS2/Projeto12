@@ -77,7 +77,7 @@ npm install
 npm run dev
 ```
 
-Acesse `http://localhost:5173`.
+**Sistema online:** projeto12-production.up.railway.app
 
 > No Windows PowerShell, use `npm.cmd` no lugar de `npm` caso apareça erro de política de execução.
 
