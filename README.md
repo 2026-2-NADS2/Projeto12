@@ -129,8 +129,6 @@ A ferramenta utilizada foi o Claude (Anthropic), como apoio técnico em atividad
 As decisões de escopo e de design, a montagem e integração do sistema, a execução dos testes, a implantação e a validação dos resultados permaneceram sob responsabilidade total dos integrantes do projeto, e todo código foi executado e testado pelo grupo antes de ser registrado no repositório.
 
 ## 📋 Licença
-
-
 <a href="https://example.com"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">KFKA (Marketmob)</font></font></a><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;"> © 2026 por </font></font><a href="https://example.com"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Daniel Bandini, Guilherme Koide, João Pedro e Raphael Carmo</font></font></a><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;"> está licenciado sob </font></font><a href="https://creativecommons.org/licenses/by/4.0/"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">CC BY 4.0</font></font></a><img src="https://mirrors.creativecommons.org/presskit/icons/cc.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;"><img src="https://mirrors.creativecommons.org/presskit/icons/by.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;">
 
 
