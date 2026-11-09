@@ -107,6 +107,27 @@ Os dados são fictícios: 24 alunos, 3 turmas, 5 professores e 12 famílias. O 1
 | Relatórios e Excel | Administrador → Relatórios (médias, tags, retornos, exportação .xlsx e .csv) |
 | Ciência e retorno | Responsável registra ciência; o retorno aparece para o professor e nos relatórios |
 
+## 🤖 Uso de Inteligência Artificial
+
+O uso de ferramentas de Inteligência Artificial no desenvolvimento foi documentado de acordo com o **Guia para o Uso Responsável de Inteligência Artificial na FECAP**.
+
+A declaração completa, com o uso em cada etapa e disciplina, está disponível em:
+
+[Documentos — Declaração de Uso de IA](Documentos/Declaracao_Uso_IA.pdf)
+
+A ferramenta utilizada foi o Claude (Anthropic), como apoio técnico em atividades como:
+
+- discussão e estruturação de soluções;
+- explicação de conceitos;
+- propostas de código para o backend e o frontend;
+- revisão das telas e conversão do design para componentes;
+- identificação e correção de erros;
+- organização de testes e automação do teste de ponta a ponta;
+- orientação na implantação em nuvem;
+- primeira versão de parte da documentação técnica.
+
+As decisões de escopo e de design, a montagem e integração do sistema, a execução dos testes, a implantação e a validação dos resultados permaneceram sob responsabilidade total dos integrantes do projeto, e todo código foi executado e testado pelo grupo antes de ser registrado no repositório.
+
 ## 📋 Licença
 
 Projeto acadêmico desenvolvido para o Projeto Interdisciplinar do curso de Análise e Desenvolvimento de Sistemas da FECAP.run start
