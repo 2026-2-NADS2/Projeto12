@@ -25,43 +25,88 @@ O sistema organiza-se em três módulos principais:
 
 ## 🛠 Estrutura de pastas
 
-- Raiz<br>
-|<br>
-|-->documentos<br>
-  &emsp;|-->antigos<br>
-  &emsp;|PI_2ADS_202602_KFKA_FINAL.pdf<br>
-|-->executáveis<br>
-  &emsp;|-->windows<br>
-  &emsp;|-->android<br>
-  &emsp;|-->HTML<br>
-|-->imagens<br>
-|-->src<br>
-  &emsp;|-->Backend<br>
-  &emsp;|-->Frontend<br>
-|readme.md<br>
+```
+Projeto12/
+├── backend/            API REST (Node.js + Express 5 + MySQL)
+│   ├── core/           SistemaEscolar (classe principal) e Database (conexão)
+│   ├── routes/         rotas da API, separadas por assunto
+│   ├── services/       regras de negócio (lançamento, revisão, PDF, Excel, senha)
+│   ├── repositories/   acesso ao banco (SQL)
+│   ├── models/         entidades (Usuario, Aluno, Professor, Acompanhamento...)
+│   ├── middlewares/    autenticação JWT e controle de perfil
+│   ├── database/       schema.sql (estrutura completa do banco)
+│   └── scripts/        carga de dados fictícios e criação de administrador
+├── frontend/           interface web responsiva (React + Vite)
+│   └── src/
+│       ├── paginas/    telas de cada módulo (admin, professor, responsavel)
+│       ├── componentes/ peças reutilizáveis (layout, selos, janelas, paginação)
+│       ├── servicos/   comunicação com a API
+│       └── index.css   guia de estilo (cores e componentes)
+└── Documentos/         entregas e documentação do PI
+```
 
-A pasta raiz contém dois arquivos principais:
+## 🛠 Tecnologias
 
-<b>README.md</b>: Arquivo com a documentação e visão geral do projeto.
+Node.js 24+ · Express 5 · MySQL 8 · bcrypt · JWT · PDFKit · ExcelJS · React 19 · React Router 7 · Vite
 
-E as seguintes pastas:
+## 🛠 Instalação e execução
 
-<b>documentos</b>: Contém a documentação técnica, modelo de banco de dados, especificações de requisitos e PDFs do PI.
+Pré-requisitos: **Node.js 24+** e **MySQL 8** em execução.
 
-<b>executáveis</b>: Binários, builds exportados ou ambiente estático de demonstração.
-
-<b>imagens</b>: Imagens, capturas de tela e recursos visuais do sistema.
-
-<b>src</b>: Código-fonte do projeto (separado em subpastas Backend e Frontend).
-
-## 🛠 Instalação
-
-<b>Backend:</b>
-
-1. Certifique-se de ter o Node.js/Java/.NET e o Banco de Dados (MySQL/PostgreSQL/SQLite) instalados.
-2. Acesse a pasta do backend e instale as dependências:
+**1. Backend**
 
 ```sh
-cd src/Backend
+cd backend
 npm install
-npm run start
+```
+
+Copie o arquivo `.env.example` para `.env` e preencha a senha do seu MySQL. Depois crie o banco já com os dados de demonstração:
+
+```sh
+npm run dados
+npm start
+```
+
+A API sobe em `http://localhost:3001`.
+
+**2. Frontend** (em outro terminal)
+
+```sh
+cd frontend
+npm install
+npm run dev
+```
+
+Acesse `http://localhost:5173`.
+
+> No Windows PowerShell, use `npm.cmd` no lugar de `npm` caso apareça erro de política de execução.
+
+## 🔑 Acessos de demonstração
+
+| Perfil | E-mail | Senha |
+| --- | --- | --- |
+| Administrador | admin@escola.com | Admin2026 |
+| Professor(a) | beatriz@escola.com, carlos@escola.com | Prof2026 |
+| Responsável | maria@email.com (mãe de Lucas e Júlia) | Resp2026 |
+
+Os dados são fictícios: 24 alunos, 3 turmas, 5 professores e 12 famílias. O 1º, o 2º e o 3º bimestres estão publicados, e o 4º está aberto para digitação.
+
+## ✅ Requisitos atendidos
+
+| Requisito | Onde ver |
+| --- | --- |
+| RF01 Autenticação e perfis | Login, recuperação de senha por link, acesso separado por perfil |
+| RF02 Cadastros | Administrador → Cadastros (7 abas) |
+| RF03 Vínculos da turma | Cadastros → Turmas → Alunos e disciplinas |
+| RF04 Períodos bimestrais | Administrador → Bimestres |
+| RF05 Acompanhamento | Professor → Minhas turmas → lançamento (descrição, média e tags) |
+| RF06 Fluxo editorial | Rascunho → envio → revisão → devolução ou publicação |
+| RF07 Histórico e auditoria | Administrador → Revisão → linha do tempo de cada acompanhamento |
+| RF08 Consulta do responsável | Responsável → relatório por bimestre e disciplina |
+| RF09 PDF | Responsável → Baixar PDF |
+| Relatórios e Excel | Administrador → Relatórios (médias, tags, retornos, exportação .xlsx e .csv) |
+| Ciência e retorno | Responsável registra ciência; o retorno aparece para o professor e nos relatórios |
+
+## 📋 Licença
+
+Projeto acadêmico desenvolvido para o Projeto Interdisciplinar do curso de Análise e Desenvolvimento de Sistemas da FECAP.run start
