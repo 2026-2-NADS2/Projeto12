@@ -131,6 +131,14 @@ As decisões de escopo e de design, a montagem e integração do sistema, a exec
 ## 📋 Licença
 <a href="https://example.com"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">KFKA (Marketmob)</font></font></a><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;"> © 2026 por </font></font><a href="https://example.com"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Daniel Bandini, Guilherme Koide, João Pedro e Raphael Carmo</font></font></a><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;"> está licenciado sob </font></font><a href="https://creativecommons.org/licenses/by/4.0/"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">CC BY 4.0</font></font></a><img src="https://mirrors.creativecommons.org/presskit/icons/cc.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;"><img src="https://mirrors.creativecommons.org/presskit/icons/by.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;">
 
+## 🎓 Referências
+FECAP. Guia para o Uso Responsável de Inteligência Artificial na FECAP. Versão 2.0, 2026. Acessar PDF
+BRASIL. Lei Geral de Proteção de Dados Pessoais (LGPD) – Lei nº 13.709/2018. Acessar Lei
+ONU. Objetivos de Desenvolvimento Sustentável – ODS 4 e ODS 10
+Documentações oficiais: Node.js · Express · MySQL · React · React Router · Vite · PDFKit · ExcelJS
+Creative Commons – escolha de licença
+Modelo de README – iuricode
+
 
 
 
