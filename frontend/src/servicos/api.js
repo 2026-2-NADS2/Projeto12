@@ -1,7 +1,8 @@
 // Cliente da API: todas as telas chamam o backend por aqui.
 // Ele envia o token automaticamente e transforma as respostas de erro em mensagens.
 
-const URL_API = import.meta.env.VITE_API_URL ?? 'http://localhost:3001';
+// No computador, a API fica em localhost:3001. Na versão publicada (build), API e telas ficam no mesmo endereço.
+const URL_API = import.meta.env.VITE_API_URL ?? (import.meta.env.PROD ? '' : 'http://localhost:3001');
 const CHAVE_TOKEN = 'kfka_token';
 
 // O navegador pode bloquear o armazenamento (aba anônima, por exemplo): por isso o try/catch

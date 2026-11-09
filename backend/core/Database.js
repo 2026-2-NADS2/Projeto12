@@ -20,6 +20,12 @@ class Database {
       dateStrings: ['DATE']     // colunas DATE voltam como texto "AAAA-MM-DD", sem hora nem fuso
     });
 
+        // Cada conexão nova passa a usar o horário de Brasília (UTC-3). Servidores na nuvem costumam estar em UTC,
+    // e sem isso datas gravadas com NOW() (publicação, ciência...) apareceriam 3 horas adiantadas.
+    this.#pool.on('connection', (conexao) => {
+      conexao.query("SET time_zone = '-03:00'");
+    });
+
     // O pool só abre conexões quando precisa. Pedimos uma agora para testar
     // as credenciais logo na inicialização, e a devolvemos em seguida.
     return new Promise((resolve, reject) => {

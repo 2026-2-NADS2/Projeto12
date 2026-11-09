@@ -1,6 +1,8 @@
 const AlunoRepository = require('../repositories/AlunoRepository');
 const criarRotasAlunos = require('../routes/alunos');
 const criarRotasAuth = require('../routes/auth');
+const path = require('path');
+const fs = require('fs');
 const express = require('express');
 const cors = require('cors');
 const ProfessorRepository = require('../repositories/ProfessorRepository');
@@ -59,6 +61,28 @@ class SistemaEscolar {
   #configurarMiddlewares() {
     this.#app.use(cors());
     this.#app.use(express.json());
+  }
+
+  // Em produção (deploy), o próprio backend entrega as telas do React já compiladas (pasta frontend/dist).
+  // Assim o sistema inteiro fica num único endereço. No computador de desenvolvimento a pasta não existe
+  // e nada muda: o React continua rodando pelo Vite na porta 5173.
+  #servirFrontend() {
+    const pastaFrontend = path.join(__dirname, '..', '..', 'frontend', 'dist');
+    if (!fs.existsSync(pastaFrontend)) return;
+
+    // Arquivos estáticos: JavaScript, CSS, ícones...
+    this.#app.use(express.static(pastaFrontend, { index: false }));
+
+    // Quando o NAVEGADOR abre um endereço (ex.: /professor/turmas), ele pede uma página HTML:
+    // devolvemos o index.html e o React Router mostra a tela certa.
+    // As chamadas da API (fetch) pedem JSON e seguem para as rotas normais.
+    this.#app.use((req, res, next) => {
+      if (req.method === 'GET' && req.accepts(['json', 'html']) === 'html') {
+        return res.sendFile(path.join(pastaFrontend, 'index.html'));
+      }
+      next();
+    });
+    console.log('Servindo o frontend a partir de frontend/dist');
   }
 
   #configurarRotas() {
@@ -149,6 +173,7 @@ class SistemaEscolar {
     }
 
     this.#configurarMiddlewares();
+    this.#servirFrontend();
     this.#configurarRotas();
 
     this.#app.listen(this.#porta, (erro) => {

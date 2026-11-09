@@ -1,0 +1,12 @@
+{
+  "name": "kfka-plataforma-acompanhamento",
+  "private": true,
+  "description": "KFKA – Plataforma de Acompanhamento Escolar (backend + frontend). Usado pelo deploy na nuvem.",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "npm --prefix frontend ci --include=dev && npm --prefix frontend run build && npm --prefix backend ci --omit=dev",
+    "start": "npm --prefix backend start"
+  }
+}
