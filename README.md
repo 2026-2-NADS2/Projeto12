@@ -4,9 +4,6 @@
 <a href= "https://www.fecap.br/"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhZPrRa89Kma0ZZogxm0pi-tCn_TLKeHGVxywp-LXAFGR3B1DPouAJYHgKZGV0XTEf4AE&usqp=CAU" alt="FECAP - Fundação de Comércio Álvares Penteado" border="0"></a>
 </p>
 
-<p align="center">
-<a href="https://projeto12-production.up.railway.app"><img src="https://github.com/user-attachments/assets/blob:https://claude.ai/5a9c263b-65f2-4620-9137-e3f4638b5c3d" alt="MarketMob" width="320"></a>
-</p>
 
 # Plataforma Web de Acompanhamento Escolar      
 
