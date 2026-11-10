@@ -5,10 +5,9 @@
 </p>
 
 <p align="center">
-<a href= "https://www.fecap.br/"><img src=blob:https://claude.ai/5a9c263b-65f2-4620-9137-e3f4638b5c3d />
-></a>
+<a href= blob:https://claude.ai/5a9c263b-65f2-4620-9137-e3f4638b5c3d><img src=<img width="1024" height="1024" alt="image" src="https://github.com/user-attachments/assets/5d17108d-a728-496f-b338-dfe46e4bc4ca" />
+="0"></a>
 </p>
-
 
 
 # Plataforma Web de Acompanhamento Escolar
