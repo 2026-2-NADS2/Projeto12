@@ -4,6 +4,13 @@
 <a href= "https://www.fecap.br/"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhZPrRa89Kma0ZZogxm0pi-tCn_TLKeHGVxywp-LXAFGR3B1DPouAJYHgKZGV0XTEf4AE&usqp=CAU" alt="FECAP - Fundação de Comércio Álvares Penteado" border="0"></a>
 </p>
 
+<p align="center">
+<a href= "https://www.fecap.br/"><img src=<img width="1024" height="1024" alt="image" src="https://github.com/user-attachments/assets/a7a16d7f-1250-498e-b90d-8b3ba0076bd4" />
+></a>
+</p>
+
+
+
 # Plataforma Web de Acompanhamento Escolar
 
 ## KFKA
