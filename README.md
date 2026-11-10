@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-<a href= "https://www.fecap.br/"><img src=<img width="1024" height="1024" alt="image" src="https://github.com/user-attachments/assets/a7a16d7f-1250-498e-b90d-8b3ba0076bd4" />
+<a href= "https://www.fecap.br/"><img src=blob:https://claude.ai/5a9c263b-65f2-4620-9137-e3f4638b5c3d />
 ></a>
 </p>
 
