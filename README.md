@@ -17,6 +17,10 @@
 
 <p align="center">
 
+<p align="center">
+  <img src="imagens/logo-marketmob.png" width="180" alt="Logo Market Mob">
+</p>
+
 A **KFKA** é uma aplicação web responsiva voltada a escolas de Ensino Fundamental, projetada para apoiar o acompanhamento acadêmico bimestral e estabelecer um fluxo claro de informação entre professores, administração escolar e pais ou responsáveis.
 
 O sistema organiza-se em três módulos principais:
