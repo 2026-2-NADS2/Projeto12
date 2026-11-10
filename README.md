@@ -5,9 +5,8 @@
 </p>
 
 <p align="center">
-<a href="https://projeto12-production.up.railway.app"><img src="Documentos/imagens/marketmob-logo.png" alt="MarketMob" width="320"></a>
+<img src="Documentos/imagens/marketmob-logo.png" alt="MarketMob" width="320">
 </p>
-
 
 # Plataforma Web de Acompanhamento Escolar
 
