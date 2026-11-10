@@ -6,8 +6,6 @@
 
 # Projeto Interdisciplinar: KFKA – Plataforma de Gestão Educacional
 
-Para executar o sistema no Windows, consulte o [passo a passo para iniciar o sistema](#️-instalação-e-configuração-windows). Para só usar, acesse o **[sistema online](https://projeto12-production.up.railway.app)**.
-
 ## Nome do Grupo: MarketMob
 
 ## Integrantes: Daniel Bandini Grande, Guilherme Koide Rangel, João Pedro Teixeira dos Santos, Raphael Carmo Mendes
