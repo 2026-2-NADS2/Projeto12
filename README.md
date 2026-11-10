@@ -5,10 +5,10 @@
 </p>
 
 <p align="center">
-<img src="Documentos/imagens/marketmob-logo.png" alt="MarketMob" width="320">
-</p>
+<a href="https://projeto12-production.up.railway.app"><img src="blob:https://claude.ai/5a9c263b-65f2-4620-9137-e3f4638b5c3d"></a>
+</p> 
 
-# Plataforma Web de Acompanhamento Escolar
+# Plataforma Web de Acompanhamento Escolar      
 
 ## KFKA
 
