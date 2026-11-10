@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import RotaProtegida from './componentes/RotaProtegida';
 import Layout from './componentes/Layout';
+import Home from './paginas/Home';
 import Login from './paginas/Login';
 import EsqueciSenha from './paginas/EsqueciSenha';
 import RedefinirSenha from './paginas/RedefinirSenha';
@@ -24,6 +25,8 @@ export default function App() {
   return (
     <Routes>
       {/* Telas abertas (sem login) */}
+      <Route path="/" element={<Home />} />
+      <Route path="/login" element={<Login />} />
       <Route path="/login" element={<Login />} />
       <Route path="/esqueci-senha" element={<EsqueciSenha />} />
       <Route path="/redefinir-senha" element={<RedefinirSenha />} />
